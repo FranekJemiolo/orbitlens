@@ -22,7 +22,10 @@
       "offset": 4,
       "bytes": 4,
       "unit": "radians",
-      "range": [0, 6.283185]
+      "range": [
+        0,
+        6.283185
+      ]
     },
     {
       "name": "dec",
@@ -30,7 +33,10 @@
       "offset": 8,
       "bytes": 4,
       "unit": "radians",
-      "range": [-1.570796, 1.570796]
+      "range": [
+        -1.570796,
+        1.570796
+      ]
     },
     {
       "name": "mag",
@@ -38,7 +44,10 @@
       "offset": 12,
       "bytes": 4,
       "unit": "magnitude",
-      "range": [-1.46, 6.0]
+      "range": [
+        -1.46,
+        6.0
+      ]
     }
   ]
 }

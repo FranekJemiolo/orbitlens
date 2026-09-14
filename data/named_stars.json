@@ -1,0 +1,1433 @@
+[
+  {
+    "id": 32263,
+    "name": "Sirius",
+    "raRad": 1.767795,
+    "decRad": -0.291751,
+    "mag": -1.44,
+    "constellation": "Canis Major",
+    "spectralType": "A0m..."
+  },
+  {
+    "id": 30365,
+    "name": "Canopus",
+    "raRad": 1.675305,
+    "decRad": -0.919713,
+    "mag": -0.62,
+    "constellation": "Carina",
+    "spectralType": "F0Ib"
+  },
+  {
+    "id": 69451,
+    "name": "Arcturus",
+    "raRad": 3.733529,
+    "decRad": 0.334796,
+    "mag": -0.05,
+    "constellation": "Bo\u00f6tes",
+    "spectralType": "K2IIIp"
+  },
+  {
+    "id": 71456,
+    "name": "Rigil Kentaurus",
+    "raRad": 3.838179,
+    "decRad": -1.061753,
+    "mag": -0.01,
+    "constellation": "Centaurus",
+    "spectralType": "G2V"
+  },
+  {
+    "id": 90979,
+    "name": "Vega",
+    "raRad": 4.873563,
+    "decRad": 0.676903,
+    "mag": 0.03,
+    "constellation": "Lyra",
+    "spectralType": "A0Vvar"
+  },
+  {
+    "id": 24549,
+    "name": "Capella",
+    "raRad": 1.381816,
+    "decRad": 0.802816,
+    "mag": 0.08,
+    "constellation": "Auriga",
+    "spectralType": "M1: comp"
+  },
+  {
+    "id": 24378,
+    "name": "Rigel",
+    "raRad": 1.37243,
+    "decRad": -0.143146,
+    "mag": 0.18,
+    "constellation": "Orion",
+    "spectralType": "B8Ia"
+  },
+  {
+    "id": 37173,
+    "name": "Procyon",
+    "raRad": 2.004083,
+    "decRad": 0.091193,
+    "mag": 0.4,
+    "constellation": "Canis Minor",
+    "spectralType": "F5IV-V"
+  },
+  {
+    "id": 27919,
+    "name": "Betelgeuse",
+    "raRad": 1.549729,
+    "decRad": 0.129278,
+    "mag": 0.45,
+    "constellation": "Orion",
+    "spectralType": "M2Ib"
+  },
+  {
+    "id": 7574,
+    "name": "Achernar",
+    "raRad": 0.426355,
+    "decRad": -0.99897,
+    "mag": 0.45,
+    "constellation": "Eridanus",
+    "spectralType": "B3Vp"
+  },
+  {
+    "id": 68483,
+    "name": "Hadar",
+    "raRad": 3.681876,
+    "decRad": -1.053708,
+    "mag": 0.61,
+    "constellation": "Centaurus",
+    "spectralType": "B1III"
+  },
+  {
+    "id": 97338,
+    "name": "Altair",
+    "raRad": 5.195772,
+    "decRad": 0.154781,
+    "mag": 0.76,
+    "constellation": "Aquila",
+    "spectralType": "A7IV-V"
+  },
+  {
+    "id": 60530,
+    "name": "Acrux",
+    "raRad": 3.257651,
+    "decRad": -1.101287,
+    "mag": 0.77,
+    "constellation": "Crux",
+    "spectralType": "B0.5IV"
+  },
+  {
+    "id": 21368,
+    "name": "Aldebaran",
+    "raRad": 1.203931,
+    "decRad": 0.288142,
+    "mag": 0.87,
+    "constellation": "Taurus",
+    "spectralType": "K5III"
+  },
+  {
+    "id": 65269,
+    "name": "Spica",
+    "raRad": 3.513317,
+    "decRad": -0.194802,
+    "mag": 0.98,
+    "constellation": "Virgo",
+    "spectralType": "B1V"
+  },
+  {
+    "id": 80519,
+    "name": "Antares",
+    "raRad": 4.317105,
+    "decRad": -0.461325,
+    "mag": 1.06,
+    "constellation": "Scorpius",
+    "spectralType": "M1Ib + B2.5V"
+  },
+  {
+    "id": 37718,
+    "name": "Pollux",
+    "raRad": 2.030327,
+    "decRad": 0.489149,
+    "mag": 1.16,
+    "constellation": "Gemini",
+    "spectralType": "K0IIIvar"
+  },
+  {
+    "id": 113008,
+    "name": "Fomalhaut",
+    "raRad": 6.011133,
+    "decRad": -0.517006,
+    "mag": 1.17,
+    "constellation": "Piscis Austrinus",
+    "spectralType": "A3V"
+  },
+  {
+    "id": 62239,
+    "name": "Mimosa",
+    "raRad": 3.349817,
+    "decRad": -1.041765,
+    "mag": 1.25,
+    "constellation": "Crux",
+    "spectralType": "B0.5III"
+  },
+  {
+    "id": 101767,
+    "name": "Deneb",
+    "raRad": 5.416769,
+    "decRad": 0.790291,
+    "mag": 1.25,
+    "constellation": "Cygnus",
+    "spectralType": "A2Ia"
+  },
+  {
+    "id": 71453,
+    "name": "Toliman",
+    "raRad": 3.83807,
+    "decRad": -1.061829,
+    "mag": 1.35,
+    "constellation": "Centaurus",
+    "spectralType": "K1V"
+  },
+  {
+    "id": 49528,
+    "name": "Regulus",
+    "raRad": 2.654523,
+    "decRad": 0.208867,
+    "mag": 1.36,
+    "constellation": "Leo",
+    "spectralType": "B7V"
+  },
+  {
+    "id": 33492,
+    "name": "Adhara",
+    "raRad": 1.8266,
+    "decRad": -0.505658,
+    "mag": 1.5,
+    "constellation": "Canis Major",
+    "spectralType": "B2II"
+  },
+  {
+    "id": 36744,
+    "name": "Castor",
+    "raRad": 1.983558,
+    "decRad": 0.556555,
+    "mag": 1.58,
+    "constellation": "Gemini",
+    "spectralType": "A2Vm"
+  },
+  {
+    "id": 60893,
+    "name": "Gacrux",
+    "raRad": 3.277579,
+    "decRad": -0.996814,
+    "mag": 1.59,
+    "constellation": "Crux",
+    "spectralType": "M4III"
+  },
+  {
+    "id": 85665,
+    "name": "Shaula",
+    "raRad": 4.597235,
+    "decRad": -0.647584,
+    "mag": 1.62,
+    "constellation": "Scorpius",
+    "spectralType": "B1.5IV+..."
+  },
+  {
+    "id": 25273,
+    "name": "Bellatrix",
+    "raRad": 1.418652,
+    "decRad": 0.110823,
+    "mag": 1.64,
+    "constellation": "Orion",
+    "spectralType": "B2III"
+  },
+  {
+    "id": 25364,
+    "name": "Elnath",
+    "raRad": 1.423717,
+    "decRad": 0.499294,
+    "mag": 1.65,
+    "constellation": "Taurus",
+    "spectralType": "B7III"
+  },
+  {
+    "id": 45106,
+    "name": "Miaplacidus",
+    "raRad": 2.413801,
+    "decRad": -1.216795,
+    "mag": 1.67,
+    "constellation": "Carina",
+    "spectralType": "A2IV"
+  },
+  {
+    "id": 26246,
+    "name": "Alnilam",
+    "raRad": 1.467008,
+    "decRad": -0.020977,
+    "mag": 1.69,
+    "constellation": "Orion",
+    "spectralType": "B0Ia"
+  },
+  {
+    "id": 108922,
+    "name": "Alnair",
+    "raRad": 5.795508,
+    "decRad": -0.819624,
+    "mag": 1.73,
+    "constellation": "Gru",
+    "spectralType": "B7IV"
+  },
+  {
+    "id": 26662,
+    "name": "Alnitak",
+    "raRad": 1.486841,
+    "decRad": -0.033904,
+    "mag": 1.74,
+    "constellation": "Orion",
+    "spectralType": "O9.5Ib SB"
+  },
+  {
+    "id": 62757,
+    "name": "Alioth",
+    "raRad": 3.377336,
+    "decRad": 0.976683,
+    "mag": 1.76,
+    "constellation": "Ursa Major",
+    "spectralType": "A0p"
+  },
+  {
+    "id": 15824,
+    "name": "Mirfak",
+    "raRad": 0.891526,
+    "decRad": 0.870242,
+    "mag": 1.79,
+    "constellation": "Perseus",
+    "spectralType": "F5Ib"
+  },
+  {
+    "id": 89906,
+    "name": "Kaus Australis",
+    "raRad": 4.81786,
+    "decRad": -0.600125,
+    "mag": 1.79,
+    "constellation": "Sagittarius",
+    "spectralType": "B9.5III"
+  },
+  {
+    "id": 53905,
+    "name": "Dubhe",
+    "raRad": 2.896065,
+    "decRad": 1.077759,
+    "mag": 1.81,
+    "constellation": "Ursa Major",
+    "spectralType": "F7V comp"
+  },
+  {
+    "id": 34354,
+    "name": "Wezen",
+    "raRad": 1.86921,
+    "decRad": -0.460648,
+    "mag": 1.83,
+    "constellation": "Canis Major",
+    "spectralType": "F8Ia"
+  },
+  {
+    "id": 67088,
+    "name": "Alkaid",
+    "raRad": 3.61083,
+    "decRad": 0.860679,
+    "mag": 1.85,
+    "constellation": "Ursa Major",
+    "spectralType": "B3V SB"
+  },
+  {
+    "id": 40921,
+    "name": "Avior",
+    "raRad": 2.192632,
+    "decRad": -1.038636,
+    "mag": 1.86,
+    "constellation": "Carina",
+    "spectralType": "K3III+B2V"
+  },
+  {
+    "id": 85965,
+    "name": "Sargas",
+    "raRad": 4.613424,
+    "decRad": -0.750454,
+    "mag": 1.86,
+    "constellation": "Scorpius",
+    "spectralType": "F1II"
+  },
+  {
+    "id": 28288,
+    "name": "Menkalinan",
+    "raRad": 1.568741,
+    "decRad": 0.784481,
+    "mag": 1.9,
+    "constellation": "Auriga",
+    "spectralType": "A2V"
+  },
+  {
+    "id": 82022,
+    "name": "Atria",
+    "raRad": 4.40113,
+    "decRad": -1.204761,
+    "mag": 1.91,
+    "constellation": "TrA",
+    "spectralType": "K2IIb-IIIa"
+  },
+  {
+    "id": 42794,
+    "name": "Alsephina",
+    "raRad": 2.289451,
+    "decRad": -0.954849,
+    "mag": 1.93,
+    "constellation": "Vela",
+    "spectralType": "A1V"
+  },
+  {
+    "id": 31601,
+    "name": "Alhena",
+    "raRad": 1.735345,
+    "decRad": 0.286221,
+    "mag": 1.93,
+    "constellation": "Gemini",
+    "spectralType": "A0IV"
+  },
+  {
+    "id": 100425,
+    "name": "Peacock",
+    "raRad": 5.347896,
+    "decRad": -0.990214,
+    "mag": 1.94,
+    "constellation": "Pav",
+    "spectralType": "B2IV"
+  },
+  {
+    "id": 11734,
+    "name": "Polaris",
+    "raRad": 0.662287,
+    "decRad": 1.557953,
+    "mag": 1.97,
+    "constellation": "Ursa Minor",
+    "spectralType": "F7:Ib-IIv SB"
+  },
+  {
+    "id": 30251,
+    "name": "Mirzam",
+    "raRad": 1.669843,
+    "decRad": -0.31339,
+    "mag": 1.98,
+    "constellation": "Canis Major",
+    "spectralType": "B1II/III"
+  },
+  {
+    "id": 46259,
+    "name": "Alphard",
+    "raRad": 2.476567,
+    "decRad": -0.151121,
+    "mag": 1.99,
+    "constellation": "Hydra",
+    "spectralType": "K3III"
+  },
+  {
+    "id": 9861,
+    "name": "Hamal",
+    "raRad": 0.554898,
+    "decRad": 0.409497,
+    "mag": 2.01,
+    "constellation": "Aries",
+    "spectralType": "K2III"
+  },
+  {
+    "id": 50440,
+    "name": "Algieba",
+    "raRad": 2.70514,
+    "decRad": 0.346299,
+    "mag": 2.01,
+    "constellation": "Leo",
+    "spectralType": "K0III"
+  },
+  {
+    "id": 3413,
+    "name": "Diphda",
+    "raRad": 0.190195,
+    "decRad": -0.313925,
+    "mag": 2.04,
+    "constellation": "Cetus",
+    "spectralType": "K0III"
+  },
+  {
+    "id": 92564,
+    "name": "Nunki",
+    "raRad": 4.95353,
+    "decRad": -0.458964,
+    "mag": 2.05,
+    "constellation": "Sagittarius",
+    "spectralType": "B2.5V"
+  },
+  {
+    "id": 68714,
+    "name": "Menkent",
+    "raRad": 3.694355,
+    "decRad": -0.634775,
+    "mag": 2.06,
+    "constellation": "Centaurus",
+    "spectralType": "K0IIIb"
+  },
+  {
+    "id": 111768,
+    "name": "Tiaki",
+    "raRad": 5.945756,
+    "decRad": -0.81829,
+    "mag": 2.07,
+    "constellation": "Gru",
+    "spectralType": "M5III"
+  },
+  {
+    "id": 72380,
+    "name": "Kochab",
+    "raRad": 3.886439,
+    "decRad": 1.294258,
+    "mag": 2.07,
+    "constellation": "Ursa Minor",
+    "spectralType": "K4IIIvar"
+  },
+  {
+    "id": 5436,
+    "name": "Mirach",
+    "raRad": 0.304262,
+    "decRad": 0.621696,
+    "mag": 2.07,
+    "constellation": "Andromeda",
+    "spectralType": "M0IIIvar"
+  },
+  {
+    "id": 27298,
+    "name": "Saiph",
+    "raRad": 1.517374,
+    "decRad": -0.168766,
+    "mag": 2.07,
+    "constellation": "Orion",
+    "spectralType": "B0.5Iavar"
+  },
+  {
+    "id": 676,
+    "name": "Alpheratz",
+    "raRad": 0.036597,
+    "decRad": 0.507724,
+    "mag": 2.07,
+    "constellation": "Andromeda",
+    "spectralType": "B9p"
+  },
+  {
+    "id": 85769,
+    "name": "Rasalhague",
+    "raRad": 4.60302,
+    "decRad": 0.219214,
+    "mag": 2.08,
+    "constellation": "Ophiuchus",
+    "spectralType": "A5III"
+  },
+  {
+    "id": 14540,
+    "name": "Algol",
+    "raRad": 0.821042,
+    "decRad": 0.714811,
+    "mag": 2.09,
+    "constellation": "Perseus",
+    "spectralType": "B8V"
+  },
+  {
+    "id": 9618,
+    "name": "Almach",
+    "raRad": 0.540612,
+    "decRad": 0.738793,
+    "mag": 2.1,
+    "constellation": "Andromeda",
+    "spectralType": "B8V"
+  },
+  {
+    "id": 57459,
+    "name": "Denebola",
+    "raRad": 3.093857,
+    "decRad": 0.25433,
+    "mag": 2.14,
+    "constellation": "Leo",
+    "spectralType": "A3Vvar"
+  },
+  {
+    "id": 4417,
+    "name": "Cih",
+    "raRad": 0.247438,
+    "decRad": 1.059707,
+    "mag": 2.15,
+    "constellation": "Cassiopeia",
+    "spectralType": "B0IV:evar"
+  },
+  {
+    "id": 45425,
+    "name": "Aspidiske",
+    "raRad": 2.430765,
+    "decRad": -1.034548,
+    "mag": 2.21,
+    "constellation": "Carina",
+    "spectralType": "A8Ib"
+  },
+  {
+    "id": 39318,
+    "name": "Naos",
+    "raRad": 2.110034,
+    "decRad": -0.698187,
+    "mag": 2.21,
+    "constellation": "Pup",
+    "spectralType": "O5IAf"
+  },
+  {
+    "id": 76035,
+    "name": "Alphecca",
+    "raRad": 4.078344,
+    "decRad": 0.466259,
+    "mag": 2.22,
+    "constellation": "CrB",
+    "spectralType": "A0V"
+  },
+  {
+    "id": 100128,
+    "name": "Sadr",
+    "raRad": 5.332977,
+    "decRad": 0.702612,
+    "mag": 2.23,
+    "constellation": "Cygnus",
+    "spectralType": "F8Ib"
+  },
+  {
+    "id": 65173,
+    "name": "Mizar",
+    "raRad": 3.507784,
+    "decRad": 0.958628,
+    "mag": 2.23,
+    "constellation": "Ursa Major",
+    "spectralType": "A2V"
+  },
+  {
+    "id": 44689,
+    "name": "Suhail",
+    "raRad": 2.391084,
+    "decRad": -0.758042,
+    "mag": 2.23,
+    "constellation": "Vela",
+    "spectralType": "K4Ib-II"
+  },
+  {
+    "id": 3172,
+    "name": "Schedar",
+    "raRad": 0.176745,
+    "decRad": 0.986763,
+    "mag": 2.24,
+    "constellation": "Cassiopeia",
+    "spectralType": "K0II-IIIvar"
+  },
+  {
+    "id": 87561,
+    "name": "Eltanin",
+    "raRad": 4.697581,
+    "decRad": 0.898651,
+    "mag": 2.24,
+    "constellation": "Dra",
+    "spectralType": "K5III"
+  },
+  {
+    "id": 25865,
+    "name": "Mintaka",
+    "raRad": 1.448653,
+    "decRad": -0.00522,
+    "mag": 2.25,
+    "constellation": "Orion",
+    "spectralType": "O9.5II"
+  },
+  {
+    "id": 744,
+    "name": "Caph",
+    "raRad": 0.040026,
+    "decRad": 1.032358,
+    "mag": 2.28,
+    "constellation": "Cassiopeia",
+    "spectralType": "F2III-IV"
+  },
+  {
+    "id": 78165,
+    "name": "Dschubba",
+    "raRad": 4.190245,
+    "decRad": -0.394823,
+    "mag": 2.29,
+    "constellation": "Scorpius",
+    "spectralType": "B0.2IV"
+  },
+  {
+    "id": 82144,
+    "name": "Larawag",
+    "raRad": 4.407675,
+    "decRad": -0.59853,
+    "mag": 2.29,
+    "constellation": "Scorpius",
+    "spectralType": "K2IIIb"
+  },
+  {
+    "id": 53754,
+    "name": "Merak",
+    "raRad": 2.887824,
+    "decRad": 0.984059,
+    "mag": 2.34,
+    "constellation": "Ursa Major",
+    "spectralType": "A1V"
+  },
+  {
+    "id": 71879,
+    "name": "Izar",
+    "raRad": 3.861484,
+    "decRad": 0.472534,
+    "mag": 2.35,
+    "constellation": "Bo\u00f6tes",
+    "spectralType": "A0"
+  },
+  {
+    "id": 106972,
+    "name": "Enif",
+    "raRad": 5.690585,
+    "decRad": 0.172351,
+    "mag": 2.38,
+    "constellation": "Pegasus",
+    "spectralType": "K2Ibvar"
+  },
+  {
+    "id": 2076,
+    "name": "Ankaa",
+    "raRad": 0.114683,
+    "decRad": -0.738379,
+    "mag": 2.4,
+    "constellation": "Phe",
+    "spectralType": "K0III..."
+  },
+  {
+    "id": 57828,
+    "name": "Phecda",
+    "raRad": 3.114671,
+    "decRad": 0.93715,
+    "mag": 2.41,
+    "constellation": "Ursa Major",
+    "spectralType": "A0V SB"
+  },
+  {
+    "id": 83755,
+    "name": "Sabik",
+    "raRad": 4.495873,
+    "decRad": -0.274451,
+    "mag": 2.43,
+    "constellation": "Ophiuchus",
+    "spectralType": "A2.5Va"
+  },
+  {
+    "id": 113521,
+    "name": "Scheat",
+    "raRad": 6.037853,
+    "decRad": 0.490137,
+    "mag": 2.44,
+    "constellation": "Pegasus",
+    "spectralType": "M2II-IIIvar"
+  },
+  {
+    "id": 104861,
+    "name": "Alderamin",
+    "raRad": 5.578848,
+    "decRad": 1.092324,
+    "mag": 2.45,
+    "constellation": "Cepheus",
+    "spectralType": "A7IV-V"
+  },
+  {
+    "id": 35806,
+    "name": "Aludra",
+    "raRad": 1.93773,
+    "decRad": -0.511436,
+    "mag": 2.45,
+    "constellation": "Canis Major",
+    "spectralType": "B5Ia"
+  },
+  {
+    "id": 45809,
+    "name": "Markeb",
+    "raRad": 2.452684,
+    "decRad": -0.960117,
+    "mag": 2.47,
+    "constellation": "Vela",
+    "spectralType": "B2IV"
+  },
+  {
+    "id": 102157,
+    "name": "Aljanah",
+    "raRad": 5.43762,
+    "decRad": 0.592893,
+    "mag": 2.48,
+    "constellation": "Cygnus",
+    "spectralType": "K0III"
+  },
+  {
+    "id": 113603,
+    "name": "Markab",
+    "raRad": 6.042159,
+    "decRad": 0.265382,
+    "mag": 2.49,
+    "constellation": "Pegasus",
+    "spectralType": "B9.5III"
+  },
+  {
+    "id": 14100,
+    "name": "Menkar",
+    "raRad": 0.795344,
+    "decRad": 0.071379,
+    "mag": 2.54,
+    "constellation": "Cetus",
+    "spectralType": "M2III"
+  },
+  {
+    "id": 54712,
+    "name": "Zosma",
+    "raRad": 2.941352,
+    "decRad": 0.358206,
+    "mag": 2.56,
+    "constellation": "Leo",
+    "spectralType": "A4V"
+  },
+  {
+    "id": 78580,
+    "name": "Acrab",
+    "raRad": 4.212514,
+    "decRad": -0.34567,
+    "mag": 2.56,
+    "constellation": "Scorpius",
+    "spectralType": "B0.5V"
+  },
+  {
+    "id": 59621,
+    "name": "Gienah",
+    "raRad": 3.21056,
+    "decRad": -0.306164,
+    "mag": 2.58,
+    "constellation": "Crv",
+    "spectralType": "B8III"
+  },
+  {
+    "id": 25920,
+    "name": "Arneb",
+    "raRad": 1.45181,
+    "decRad": -0.311058,
+    "mag": 2.58,
+    "constellation": "Lep",
+    "spectralType": "F0Ib"
+  },
+  {
+    "id": 93213,
+    "name": "Ascella",
+    "raRad": 4.985585,
+    "decRad": -0.521506,
+    "mag": 2.6,
+    "constellation": "Sagittarius",
+    "spectralType": "A3IV"
+  },
+  {
+    "id": 74556,
+    "name": "Zubeneschamali",
+    "raRad": 4.001198,
+    "decRad": -0.163763,
+    "mag": 2.61,
+    "constellation": "Lib",
+    "spectralType": "B8V"
+  },
+  {
+    "id": 76835,
+    "name": "Unukalhai",
+    "raRad": 4.120146,
+    "decRad": 0.112148,
+    "mag": 2.63,
+    "constellation": "Ser",
+    "spectralType": "K2III"
+  },
+  {
+    "id": 8884,
+    "name": "Sheratan",
+    "raRad": 0.500212,
+    "decRad": 0.363169,
+    "mag": 2.64,
+    "constellation": "Aries",
+    "spectralType": "A5V..."
+  },
+  {
+    "id": 26569,
+    "name": "Phact",
+    "raRad": 1.481998,
+    "decRad": -0.594705,
+    "mag": 2.65,
+    "constellation": "Col",
+    "spectralType": "B7IV"
+  },
+  {
+    "id": 61166,
+    "name": "Kraz",
+    "raRad": 3.291635,
+    "decRad": -0.40835,
+    "mag": 2.65,
+    "constellation": "Crv",
+    "spectralType": "G5II"
+  },
+  {
+    "id": 28309,
+    "name": "Mahasim",
+    "raRad": 1.569579,
+    "decRad": 0.649482,
+    "mag": 2.65,
+    "constellation": "Auriga",
+    "spectralType": "A0p Si"
+  },
+  {
+    "id": 6672,
+    "name": "Ruchbah",
+    "raRad": 0.37443,
+    "decRad": 1.051304,
+    "mag": 2.66,
+    "constellation": "Cassiopeia",
+    "spectralType": "A5Vv SB"
+  },
+  {
+    "id": 67711,
+    "name": "Muphrid",
+    "raRad": 3.641999,
+    "decRad": 0.321101,
+    "mag": 2.68,
+    "constellation": "Bo\u00f6tes",
+    "spectralType": "G0IV"
+  },
+  {
+    "id": 22961,
+    "name": "Hassaleh",
+    "raRad": 1.295879,
+    "decRad": 0.578857,
+    "mag": 2.69,
+    "constellation": "Auriga",
+    "spectralType": "K3IIvar"
+  },
+  {
+    "id": 85436,
+    "name": "Lesath",
+    "raRad": 4.584823,
+    "decRad": -0.650935,
+    "mag": 2.7,
+    "constellation": "Scorpius",
+    "spectralType": "B2IV"
+  },
+  {
+    "id": 89653,
+    "name": "Kaus Media",
+    "raRad": 4.803993,
+    "decRad": -0.520599,
+    "mag": 2.72,
+    "constellation": "Sagittarius",
+    "spectralType": "K3III"
+  },
+  {
+    "id": 96970,
+    "name": "Tarazed",
+    "raRad": 5.176034,
+    "decRad": 0.185236,
+    "mag": 2.72,
+    "constellation": "Aquila",
+    "spectralType": "K3II"
+  },
+  {
+    "id": 80089,
+    "name": "Athebyne",
+    "raRad": 4.293473,
+    "decRad": 1.073626,
+    "mag": 2.73,
+    "constellation": "Dra",
+    "spectralType": "G8III"
+  },
+  {
+    "id": 79352,
+    "name": "Yed Prior",
+    "raRad": 4.251385,
+    "decRad": -0.064478,
+    "mag": 2.73,
+    "constellation": "Ophiuchus",
+    "spectralType": "M1III"
+  },
+  {
+    "id": 61748,
+    "name": "Porrima",
+    "raRad": 3.323372,
+    "decRad": -0.025296,
+    "mag": 2.74,
+    "constellation": "Virgo",
+    "spectralType": "F0V+..."
+  },
+  {
+    "id": 72396,
+    "name": "Zubenelgenubi",
+    "raRad": 3.887191,
+    "decRad": -0.279982,
+    "mag": 2.75,
+    "constellation": "Lib",
+    "spectralType": "A3IV"
+  },
+  {
+    "id": 26176,
+    "name": "Hatysa",
+    "raRad": 1.463603,
+    "decRad": -0.103147,
+    "mag": 2.75,
+    "constellation": "Orion",
+    "spectralType": "O9III"
+  },
+  {
+    "id": 86475,
+    "name": "Cebalrai",
+    "raRad": 4.640275,
+    "decRad": 0.079714,
+    "mag": 2.76,
+    "constellation": "Ophiuchus",
+    "spectralType": "K2III"
+  },
+  {
+    "id": 23820,
+    "name": "Cursa",
+    "raRad": 1.343248,
+    "decRad": -0.088775,
+    "mag": 2.78,
+    "constellation": "Eridanus",
+    "spectralType": "A3IIIvar"
+  },
+  {
+    "id": 80571,
+    "name": "Kornephoros",
+    "raRad": 4.32065,
+    "decRad": 0.375065,
+    "mag": 2.78,
+    "constellation": "Hercules",
+    "spectralType": "G8III"
+  },
+  {
+    "id": 84086,
+    "name": "Rasalgethi",
+    "raRad": 4.514502,
+    "decRad": 0.251159,
+    "mag": 2.78,
+    "constellation": "Hercules",
+    "spectralType": "M5IIvar"
+  },
+  {
+    "id": 85410,
+    "name": "Rastaban",
+    "raRad": 4.583378,
+    "decRad": 0.912831,
+    "mag": 2.79,
+    "constellation": "Dra",
+    "spectralType": "G2II"
+  },
+  {
+    "id": 59565,
+    "name": "Imai",
+    "raRad": 3.207678,
+    "decRad": -1.025362,
+    "mag": 2.79,
+    "constellation": "Crux",
+    "spectralType": "B2IV"
+  },
+  {
+    "id": 25542,
+    "name": "Nihal",
+    "raRad": 1.432241,
+    "decRad": -0.362321,
+    "mag": 2.81,
+    "constellation": "Lep",
+    "spectralType": "G5II"
+  },
+  {
+    "id": 81020,
+    "name": "Paikauhale",
+    "raRad": 4.345357,
+    "decRad": -0.492462,
+    "mag": 2.82,
+    "constellation": "Scorpius",
+    "spectralType": "B0V"
+  },
+  {
+    "id": 90217,
+    "name": "Kaus Borealis",
+    "raRad": 4.834434,
+    "decRad": -0.443692,
+    "mag": 2.82,
+    "constellation": "Sagittarius",
+    "spectralType": "K1IIIb"
+  },
+  {
+    "id": 39644,
+    "name": "Tureis",
+    "raRad": 2.127313,
+    "decRad": -0.42419,
+    "mag": 2.83,
+    "constellation": "Pup",
+    "spectralType": "F2mF5IIp"
+  },
+  {
+    "id": 1065,
+    "name": "Algenib",
+    "raRad": 0.057752,
+    "decRad": 0.265004,
+    "mag": 2.83,
+    "constellation": "Pegasus",
+    "spectralType": "B2IV"
+  },
+  {
+    "id": 63405,
+    "name": "Vindemiatrix",
+    "raRad": 3.41289,
+    "decRad": 0.191273,
+    "mag": 2.85,
+    "constellation": "Virgo",
+    "spectralType": "G8IIIvar"
+  },
+  {
+    "id": 107213,
+    "name": "Deneb Algedi",
+    "raRad": 5.703041,
+    "decRad": -0.281474,
+    "mag": 2.85,
+    "constellation": "Capricornus",
+    "spectralType": "A5mF2 (IV)"
+  },
+  {
+    "id": 17661,
+    "name": "Alcyone",
+    "raRad": 0.992589,
+    "decRad": 0.420714,
+    "mag": 2.85,
+    "constellation": "Taurus",
+    "spectralType": "B7III"
+  },
+  {
+    "id": 96858,
+    "name": "Fawaris",
+    "raRad": 5.170426,
+    "decRad": 0.787681,
+    "mag": 2.86,
+    "constellation": "Cygnus",
+    "spectralType": "B9.5III"
+  },
+  {
+    "id": 30270,
+    "name": "Tejat",
+    "raRad": 1.67098,
+    "decRad": 0.392936,
+    "mag": 2.87,
+    "constellation": "Gemini",
+    "spectralType": "M3IIIvar"
+  },
+  {
+    "id": 13813,
+    "name": "Acamar",
+    "raRad": 0.777812,
+    "decRad": -0.703449,
+    "mag": 2.88,
+    "constellation": "Eridanus",
+    "spectralType": "A4III+..."
+  },
+  {
+    "id": 93846,
+    "name": "Albaldah",
+    "raRad": 5.016791,
+    "decRad": -0.366931,
+    "mag": 2.88,
+    "constellation": "Sagittarius",
+    "spectralType": "F2II/III"
+  },
+  {
+    "id": 78029,
+    "name": "Fang",
+    "raRad": 4.183781,
+    "decRad": -0.455777,
+    "mag": 2.89,
+    "constellation": "Scorpius",
+    "spectralType": "B1V + B2V"
+  },
+  {
+    "id": 36087,
+    "name": "Gomeisa",
+    "raRad": 1.951063,
+    "decRad": 0.144676,
+    "mag": 2.89,
+    "constellation": "Canis Minor",
+    "spectralType": "B8Vvar"
+  },
+  {
+    "id": 62925,
+    "name": "Cor Caroli",
+    "raRad": 3.386063,
+    "decRad": 0.668782,
+    "mag": 2.89,
+    "constellation": "CVn",
+    "spectralType": "A0spe..."
+  },
+  {
+    "id": 105936,
+    "name": "Sadalsuud",
+    "raRad": 5.635489,
+    "decRad": -0.097235,
+    "mag": 2.9,
+    "constellation": "Aquarius",
+    "spectralType": "G0Ib"
+  },
+  {
+    "id": 79870,
+    "name": "Alniyat",
+    "raRad": 4.281243,
+    "decRad": -0.446679,
+    "mag": 2.9,
+    "constellation": "Scorpius",
+    "spectralType": "B1III"
+  },
+  {
+    "id": 111804,
+    "name": "Matar",
+    "raRad": 5.947219,
+    "decRad": 0.52746,
+    "mag": 2.93,
+    "constellation": "Pegasus",
+    "spectralType": "G2II-III.."
+  },
+  {
+    "id": 60776,
+    "name": "Algorab",
+    "raRad": 3.2719,
+    "decRad": -0.288249,
+    "mag": 2.94,
+    "constellation": "Crv",
+    "spectralType": "B9.5V"
+  },
+  {
+    "id": 108728,
+    "name": "Sadalmelik",
+    "raRad": 5.784824,
+    "decRad": -0.005582,
+    "mag": 2.95,
+    "constellation": "Aquarius",
+    "spectralType": "G2Ib"
+  },
+  {
+    "id": 18497,
+    "name": "Zaurak",
+    "raRad": 1.038599,
+    "decRad": -0.235768,
+    "mag": 2.97,
+    "constellation": "Eridanus",
+    "spectralType": "M1IIIb Ca-1"
+  },
+  {
+    "id": 47772,
+    "name": "Ras Elased Australis",
+    "raRad": 2.556258,
+    "decRad": 0.414939,
+    "mag": 2.97,
+    "constellation": "Leo",
+    "spectralType": "G0II"
+  },
+  {
+    "id": 26386,
+    "name": "Tianguan",
+    "raRad": 1.473253,
+    "decRad": 0.369007,
+    "mag": 2.97,
+    "constellation": "Taurus",
+    "spectralType": "B4IIIp"
+  },
+  {
+    "id": 88361,
+    "name": "Alnasl",
+    "raRad": 4.737732,
+    "decRad": -0.531001,
+    "mag": 2.98,
+    "constellation": "Sagittarius",
+    "spectralType": "K0III"
+  },
+  {
+    "id": 93452,
+    "name": "Okab",
+    "raRad": 4.997795,
+    "decRad": 0.241963,
+    "mag": 2.99,
+    "constellation": "Aquila",
+    "spectralType": "A0Vn"
+  },
+  {
+    "id": 82263,
+    "name": "Xamidimura",
+    "raRad": 4.415118,
+    "decRad": -0.664052,
+    "mag": 3.0,
+    "constellation": "Scorpius",
+    "spectralType": "B1.5IV + B"
+  },
+  {
+    "id": 74868,
+    "name": "Pherkad",
+    "raRad": 4.017438,
+    "decRad": 1.25374,
+    "mag": 3.0,
+    "constellation": "Ursa Minor",
+    "spectralType": "A3II-III"
+  },
+  {
+    "id": 107742,
+    "name": "Aldhanab",
+    "raRad": 5.733095,
+    "decRad": -0.65214,
+    "mag": 3.0,
+    "constellation": "Gru",
+    "spectralType": "B8III"
+  },
+  {
+    "id": 30049,
+    "name": "Furud",
+    "raRad": 1.659429,
+    "decRad": -0.524705,
+    "mag": 3.02,
+    "constellation": "Canis Major",
+    "spectralType": "B2.5V"
+  },
+  {
+    "id": 23361,
+    "name": "Almaaz",
+    "raRad": 1.317588,
+    "decRad": 0.764861,
+    "mag": 3.03,
+    "constellation": "Auriga",
+    "spectralType": "F0Ia"
+  },
+  {
+    "id": 70851,
+    "name": "Seginus",
+    "raRad": 3.805159,
+    "decRad": 0.668605,
+    "mag": 3.04,
+    "constellation": "Bo\u00f6tes",
+    "spectralType": "A7IIIvar"
+  },
+  {
+    "id": 95648,
+    "name": "Albireo",
+    "raRad": 5.108236,
+    "decRad": 0.487988,
+    "mag": 3.05,
+    "constellation": "Cygnus",
+    "spectralType": "K3II+..."
+  },
+  {
+    "id": 100020,
+    "name": "Dabih",
+    "raRad": 5.327666,
+    "decRad": -0.257984,
+    "mag": 3.05,
+    "constellation": "Capricornus",
+    "spectralType": "A5:n"
+  },
+  {
+    "id": 50655,
+    "name": "Tania Australis",
+    "raRad": 2.715424,
+    "decRad": 0.724303,
+    "mag": 3.06,
+    "constellation": "Ursa Major",
+    "spectralType": "M0III SB"
+  },
+  {
+    "id": 32161,
+    "name": "Mebsuta",
+    "raRad": 1.762486,
+    "decRad": 0.438621,
+    "mag": 3.06,
+    "constellation": "Gemini",
+    "spectralType": "A3mA6-A9"
+  },
+  {
+    "id": 94081,
+    "name": "Altais",
+    "raRad": 5.028963,
+    "decRad": 1.180917,
+    "mag": 3.07,
+    "constellation": "Dra",
+    "spectralType": "G9III"
+  },
+  {
+    "id": 44000,
+    "name": "Talitha",
+    "raRad": 2.352746,
+    "decRad": 0.838488,
+    "mag": 3.12,
+    "constellation": "Ursa Major",
+    "spectralType": "A7IV"
+  },
+  {
+    "id": 84121,
+    "name": "Sarin",
+    "raRad": 4.516178,
+    "decRad": 0.433526,
+    "mag": 3.12,
+    "constellation": "Hercules",
+    "spectralType": "A3IVv SB"
+  },
+  {
+    "id": 27559,
+    "name": "Wazn",
+    "raRad": 1.531351,
+    "decRad": -0.624275,
+    "mag": 3.12,
+    "constellation": "Col",
+    "spectralType": "K1.5III"
+  },
+  {
+    "id": 83638,
+    "name": "Aldhibah",
+    "raRad": 4.48893,
+    "decRad": 1.146938,
+    "mag": 3.17,
+    "constellation": "Dra",
+    "spectralType": "B6III"
+  },
+  {
+    "id": 23712,
+    "name": "Haedus",
+    "raRad": 1.337423,
+    "decRad": 0.719677,
+    "mag": 3.18,
+    "constellation": "Auriga",
+    "spectralType": "B3V"
+  },
+  {
+    "id": 86991,
+    "name": "Fuyue",
+    "raRad": 4.668136,
+    "decRad": -0.646528,
+    "mag": 3.19,
+    "constellation": "Scorpius",
+    "spectralType": "K0/K1III"
+  },
+  {
+    "id": 22396,
+    "name": "Tabit",
+    "raRad": 1.264666,
+    "decRad": 0.121497,
+    "mag": 3.19,
+    "constellation": "Orion",
+    "spectralType": "F6V"
+  }
+]
