@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "VisibleStarCatalogMeta",
+  "description": "Optimized naked-eye star catalog compiled from HYG Database v4.0",
+  "count": 5070,
+  "strideBytes": 16,
+  "epoch": "J2000",
+  "limitingMagnitude": 6.0,
+  "upstreamSource": "https://raw.githubusercontent.com/astronexus/HYG-Database/main/hyg/CURRENT/hygdata_v40.csv.gz",
+  "upstreamEtag": "\"8215c7dc45943b7700fe1988b8aa7e750e461e86d60f31b0561bb1b50fdc23a4\"",
+  "fields": [
+    {
+      "name": "id",
+      "type": "int32",
+      "offset": 0,
+      "bytes": 4,
+      "description": "HYG Catalog Star Identifier"
+    },
+    {
+      "name": "ra",
+      "type": "float32",
+      "offset": 4,
+      "bytes": 4,
+      "unit": "radians",
+      "range": [0, 6.283185]
+    },
+    {
+      "name": "dec",
+      "type": "float32",
+      "offset": 8,
+      "bytes": 4,
+      "unit": "radians",
+      "range": [-1.570796, 1.570796]
+    },
+    {
+      "name": "mag",
+      "type": "float32",
+      "offset": 12,
+      "bytes": 4,
+      "unit": "magnitude",
+      "range": [-1.46, 6.0]
+    }
+  ]
+}
