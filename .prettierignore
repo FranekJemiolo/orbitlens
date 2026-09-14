@@ -1,0 +1,5 @@
+dist/
+node_modules/
+public/data/stars.json
+public/data/stars.bin
+public/data/hyg_minified.csv
