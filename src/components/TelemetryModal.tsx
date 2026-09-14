@@ -1,6 +1,6 @@
 import React from "react";
 import type { ARObject } from "../math/coordinates";
-import { X, Satellite, Plane, Flame, Sparkles } from "lucide-react";
+import { X, Satellite, Plane, Flame, Sparkles, Globe2 } from "lucide-react";
 
 interface TelemetryModalProps {
   entity: ARObject | null;
@@ -15,11 +15,14 @@ export const TelemetryModal: React.FC<TelemetryModalProps> = ({
 }) => {
   if (!entity) return null;
 
+  const isPlanet = entity.type === "PLANET";
   const isSat = entity.type === "SATELLITE";
   const isPlane = entity.type === "AIRPLANE";
   const isMeteor = entity.type === "METEOR";
 
-  const icon = isSat ? (
+  const icon = isPlanet ? (
+    <Globe2 className="w-5 h-5 text-amber-300" />
+  ) : isSat ? (
     <Satellite className="w-5 h-5 text-red-400" />
   ) : isPlane ? (
     <Plane className="w-5 h-5 text-emerald-400" />

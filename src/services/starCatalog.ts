@@ -4,6 +4,11 @@ import {
   horizontalToCartesian,
 } from "../math/coordinates";
 import type { ARObject } from "../math/coordinates";
+import {
+  getMoonPosition,
+  getSunPosition,
+  getMajorPlanetsPositions,
+} from "../math/astronomy";
 
 export interface StarRecord {
   id: number;
@@ -80,6 +85,42 @@ export function getNamedStarsARObjects(
         spectralType: star.spectralType,
         hygId: star.id,
       },
+    };
+  });
+}
+
+/**
+ * Computes real-time ARObjects for the Moon, Sun, and major visible planets
+ */
+export function getSolarSystemARObjects(
+  observerLat: number,
+  observerLon: number,
+  date: Date,
+): ARObject[] {
+  const bodies = [
+    getMoonPosition(date),
+    ...getMajorPlanetsPositions(date),
+    getSunPosition(date),
+  ];
+
+  return bodies.map((body) => {
+    const { altitude, azimuth } = equatorialToHorizontal(
+      body.raRad,
+      body.decRad,
+      observerLat,
+      observerLon,
+      date,
+    );
+
+    return {
+      id: `sol-${body.name.toLowerCase()}`,
+      type: body.type,
+      label: body.name,
+      altitude,
+      azimuth,
+      magnitude: body.magnitude,
+      distanceKm: body.distanceKm,
+      metadata: body.metadata,
     };
   });
 }

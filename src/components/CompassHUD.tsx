@@ -61,7 +61,7 @@ export const CompassHUD: React.FC<CompassHUDProps> = ({
   }
 
   return (
-    <div className="absolute top-0 left-0 right-0 pointer-events-none p-3 select-none z-20">
+    <div className="absolute top-0 left-0 right-0 pointer-events-none px-3 pt-[max(0.75rem,env(safe-area-inset-top))] select-none z-20">
       {/* Top Bar: Telemetry Readouts */}
       <div className="flex justify-between items-start text-xs font-mono text-astro-accent gap-2">
         {/* Left: GPS Telemetry */}

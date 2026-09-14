@@ -1,20 +1,24 @@
 import React from "react";
 import type { ARObject } from "../math/coordinates";
 import type { OrientationTelemetry } from "../math/deviceOrientation";
-import { Satellite, Plane, Flame, Sparkles } from "lucide-react";
+import { Satellite, Plane, Flame, Sparkles, Globe2 } from "lucide-react";
 
 interface EntityOverlayProps {
   telemetry: OrientationTelemetry;
   satellites: ARObject[];
   airplanes: ARObject[];
   meteors: ARObject[];
+  planets?: ARObject[];
   namedStars?: ARObject[];
   constellationLabels?: ARObject[];
   showSatellites: boolean;
   showAirplanes: boolean;
   showMeteors: boolean;
+  showPlanets?: boolean;
   showStars?: boolean;
   showConstellations?: boolean;
+  hFov?: number;
+  vFov?: number;
   isNightVision: boolean;
   onSelectEntity: (entity: ARObject) => void;
 }
@@ -24,13 +28,17 @@ export const EntityOverlay: React.FC<EntityOverlayProps> = ({
   satellites,
   airplanes,
   meteors,
+  planets = [],
   namedStars = [],
   constellationLabels = [],
   showSatellites,
   showAirplanes,
   showMeteors,
+  showPlanets = true,
   showStars = true,
   showConstellations = true,
+  hFov = 60,
+  vFov = 65,
   isNightVision,
   onSelectEntity,
 }) => {
@@ -40,11 +48,8 @@ export const EntityOverlay: React.FC<EntityOverlayProps> = ({
     screenY: number;
   }[] = [];
 
-  // Approximate camera horizontal FOV ~60 degrees, vertical ~75 degrees
-  const hFov = 60;
-  const vFov = 75;
-
   const allObjects: ARObject[] = [];
+  if (showPlanets) allObjects.push(...planets);
   if (showSatellites) allObjects.push(...satellites);
   if (showAirplanes) allObjects.push(...airplanes);
   if (showMeteors) allObjects.push(...meteors);
@@ -73,6 +78,7 @@ export const EntityOverlay: React.FC<EntityOverlayProps> = ({
   return (
     <div className="absolute inset-0 pointer-events-none z-15 overflow-hidden select-none">
       {visibleEntities.map(({ entity, screenX, screenY }) => {
+        const isPlanet = entity.type === "PLANET";
         const isSat = entity.type === "SATELLITE";
         const isPlane = entity.type === "AIRPLANE";
         const isMeteor = entity.type === "METEOR";
@@ -105,13 +111,15 @@ export const EntityOverlay: React.FC<EntityOverlayProps> = ({
         // Night vision forces pure red tones
         const themeColor = isNightVision
           ? "border-red-500 text-red-400 shadow-red-500/30"
-          : isSat
-            ? "border-red-500 text-red-400 shadow-red-500/20"
-            : isPlane
-              ? "border-emerald-400 text-emerald-400 shadow-emerald-400/20"
-              : isMeteor
-                ? "border-amber-400 text-amber-400 shadow-amber-400/20"
-                : "border-sky-300 text-sky-200 shadow-sky-400/20";
+          : isPlanet
+            ? "border-amber-400 text-amber-300 shadow-amber-400/30"
+            : isSat
+              ? "border-red-500 text-red-400 shadow-red-500/20"
+              : isPlane
+                ? "border-emerald-400 text-emerald-400 shadow-emerald-400/20"
+                : isMeteor
+                  ? "border-amber-400 text-amber-400 shadow-amber-400/20"
+                  : "border-sky-300 text-sky-200 shadow-sky-400/20";
 
         return (
           <div
@@ -123,6 +131,41 @@ export const EntityOverlay: React.FC<EntityOverlayProps> = ({
             className="absolute pointer-events-auto cursor-pointer group transition-transform duration-100 ease-out hover:scale-110 active:scale-95"
             data-testid={`entity-${entity.id}`}
           >
+            {/* Planet / Moon Reticle */}
+            {isPlanet && (
+              <div className="relative flex flex-col items-center">
+                <div
+                  className={`w-9 h-9 rounded-full border-2 ${themeColor} flex items-center justify-center bg-amber-400/10 shadow-lg`}
+                >
+                  <Globe2
+                    className={`w-4 h-4 ${isNightVision ? "text-red-400" : "text-amber-300"}`}
+                  />
+                </div>
+                <div
+                  className={`mt-1 px-1.5 py-0.5 bg-astro-dark/95 border ${
+                    isNightVision ? "border-red-500/40" : "border-amber-400/40"
+                  } rounded text-[10px] font-mono whitespace-nowrap shadow-md flex items-center gap-1`}
+                >
+                  <span
+                    className={`font-bold ${isNightVision ? "text-red-300" : "text-amber-300"}`}
+                  >
+                    {entity.label}
+                  </span>
+                  {entity.metadata?.phase ? (
+                    <span className="opacity-75 text-[9px]">
+                      [{String(entity.metadata.phase)}]
+                    </span>
+                  ) : (
+                    entity.magnitude !== undefined && (
+                      <span className="opacity-60 text-[9px]">
+                        [{entity.magnitude.toFixed(1)}]
+                      </span>
+                    )
+                  )}
+                </div>
+              </div>
+            )}
+
             {/* Satellite Reticle */}
             {isSat && (
               <div className="relative flex flex-col items-center">

@@ -108,10 +108,66 @@ test.describe("OrbitLens AR Celestial Tracker & Sensor Fusion", () => {
     await settingsBtn.click();
 
     await expect(page.getByText(/TACTICAL LAYERS/)).toBeVisible();
+    await expect(page.getByText("Planets & Moon")).toBeVisible();
     await expect(page.getByText(/Stars/)).toBeVisible();
     await expect(page.getByText("Constellations")).toBeVisible();
     await expect(page.getByText("Satellites (ISS)")).toBeVisible();
     await expect(page.getByText("Aircraft (ADS-B)")).toBeVisible();
     await expect(page.getByText(/Meteor/)).toBeVisible();
+  });
+
+  test("should open Celestial Target Finder, search for a target, and activate Target Guidance", async ({
+    page,
+  }) => {
+    await page.goto("/");
+
+    const searchBtn = page.locator('[data-testid="open-search-button"]');
+    await expect(searchBtn).toBeVisible();
+    await searchBtn.click();
+
+    const searchModal = page.locator('[data-testid="search-modal"]');
+    await expect(searchModal).toBeVisible();
+
+    const searchInput = page.locator('[data-testid="search-input"]');
+    await searchInput.fill("Jupiter");
+
+    // Verify Jupiter search result appears
+    const jupiterItem = page.locator('[data-testid="search-item-sol-jupiter"]');
+    await expect(jupiterItem).toBeVisible();
+
+    // Click to track Jupiter
+    await jupiterItem.click();
+
+    // Search modal should close
+    await expect(searchModal).not.toBeVisible();
+
+    // Target guide HUD should be active
+    const guideHud = page.locator('[data-testid="target-guide-hud"]');
+    await expect(guideHud).toBeVisible();
+    await expect(guideHud).toContainText("Jupiter");
+
+    // Clear tracking target
+    const clearBtn = page.locator('[data-testid="clear-tracking-target"]');
+    await clearBtn.click();
+    await expect(guideHud).not.toBeVisible();
+  });
+
+  test("should open and close AR User Guide & Tactical Legend modal", async ({
+    page,
+  }) => {
+    await page.goto("/");
+
+    const helpBtn = page.locator('[data-testid="open-help-button"]');
+    await expect(helpBtn).toBeVisible();
+    await helpBtn.click();
+
+    const helpModal = page.locator('[data-testid="help-modal"]');
+    await expect(helpModal).toBeVisible();
+    await expect(page.getByText(/TACTICAL LEGEND/i)).toBeVisible();
+    await expect(page.getByText(/Planets & Moon/i)).toBeVisible();
+
+    const closeHelpBtn = page.locator('[data-testid="close-help-modal"]');
+    await closeHelpBtn.click();
+    await expect(helpModal).not.toBeVisible();
   });
 });

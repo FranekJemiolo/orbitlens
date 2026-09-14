@@ -10,7 +10,7 @@ import {
  */
 export interface ARObject {
   id: string;
-  type: "STAR" | "SATELLITE" | "AIRPLANE" | "COMET" | "METEOR";
+  type: "STAR" | "SATELLITE" | "AIRPLANE" | "COMET" | "METEOR" | "PLANET";
   label: string;
   altitude: number; // Real-time altitude above horizon (-90 to +90 degrees)
   azimuth: number; // Real-time compass heading (0 to 360 degrees, 0 = North, 90 = East)
@@ -18,6 +18,22 @@ export interface ARObject {
   distanceKm?: number; // Distance from observer in km
   velocityKmh?: number; // Velocity in km/h
   metadata?: Record<string, string | number | boolean>;
+}
+
+/**
+ * Computes dynamic horizontal and vertical field of view in degrees
+ * matching Three.js perspective camera's vertical FOV and screen aspect ratio.
+ */
+export function computeDynamicFov(
+  verticalFovDeg: number,
+  aspectRatio: number,
+): { hFov: number; vFov: number } {
+  const vFovRad = verticalFovDeg * DEG2RAD;
+  const hFovRad = 2 * Math.atan(Math.tan(vFovRad / 2) * aspectRatio);
+  return {
+    vFov: verticalFovDeg,
+    hFov: hFovRad * RAD2DEG,
+  };
 }
 
 export interface HorizontalCoords {

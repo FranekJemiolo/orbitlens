@@ -35,6 +35,8 @@ export class SensorService {
 
   private boundHandleOrientation = this.handleOrientation.bind(this);
 
+  private isTracking = false;
+
   /**
    * Requests DeviceOrientation permission on iOS 13+ devices
    */
@@ -63,6 +65,17 @@ export class SensorService {
   }
 
   startOrientationTracking(): void {
+    if (this.isTracking || typeof window === "undefined") return;
+    this.isTracking = true;
+
+    // Prefer deviceorientationabsolute on Android Chrome if available
+    if ("ondeviceorientationabsolute" in window) {
+      window.addEventListener(
+        "deviceorientationabsolute" as unknown as "deviceorientation",
+        this.boundHandleOrientation,
+        true,
+      );
+    }
     window.addEventListener(
       "deviceorientation",
       this.boundHandleOrientation,
@@ -71,6 +84,16 @@ export class SensorService {
   }
 
   stopOrientationTracking(): void {
+    if (!this.isTracking || typeof window === "undefined") return;
+    this.isTracking = false;
+
+    if ("ondeviceorientationabsolute" in window) {
+      window.removeEventListener(
+        "deviceorientationabsolute" as unknown as "deviceorientation",
+        this.boundHandleOrientation,
+        true,
+      );
+    }
     window.removeEventListener(
       "deviceorientation",
       this.boundHandleOrientation,
@@ -140,6 +163,22 @@ export class SensorService {
 
   onOrientation(listener: OrientationListener): () => void {
     this.orientationListeners.add(listener);
+
+    // If permission prompt is not required (e.g. Android/Chrome/Desktop), start tracking immediately
+    const DeviceOrientationEventAny =
+      typeof window !== "undefined"
+        ? (window.DeviceOrientationEvent as unknown as {
+            requestPermission?: unknown;
+          })
+        : null;
+
+    if (
+      !DeviceOrientationEventAny ||
+      typeof DeviceOrientationEventAny.requestPermission !== "function"
+    ) {
+      this.startOrientationTracking();
+    }
+
     return () => this.orientationListeners.delete(listener);
   }
 

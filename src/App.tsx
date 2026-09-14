@@ -6,12 +6,19 @@ import { EntityOverlay } from "./components/EntityOverlay";
 import { ControlPanel } from "./components/ControlPanel";
 import { RecordingControls } from "./components/RecordingControls";
 import { TelemetryModal } from "./components/TelemetryModal";
+import { SearchModal } from "./components/SearchModal";
+import { TargetGuide } from "./components/TargetGuide";
+import { HelpModal } from "./components/HelpModal";
 import type { OrientationTelemetry } from "./math/deviceOrientation";
 import { sensorService } from "./services/sensors";
 import type { LocationState } from "./services/sensors";
 import type { ARObject } from "./math/coordinates";
-import { equatorialToHorizontal } from "./math/coordinates";
-import { loadNamedStars, getNamedStarsARObjects } from "./services/starCatalog";
+import { equatorialToHorizontal, computeDynamicFov } from "./math/coordinates";
+import {
+  loadNamedStars,
+  getNamedStarsARObjects,
+  getSolarSystemARObjects,
+} from "./services/starCatalog";
 import type { NamedStarRecord } from "./services/starCatalog";
 import { soundService } from "./services/audio";
 
@@ -39,8 +46,10 @@ export function App() {
     sensorService.currentLocation,
   );
   const [isNightVision, setIsNightVision] = useState(false);
+  const [cameraFov, setCameraFov] = useState(65);
 
   // Layer toggles
+  const [showPlanets, setShowPlanets] = useState(true);
   const [showStars, setShowStars] = useState(true);
   const [showConstellations, setShowConstellations] = useState(true);
   const [showSatellites, setShowSatellites] = useState(true);
@@ -52,9 +61,15 @@ export function App() {
   const [airplanes, setAirplanes] = useState<ARObject[]>([]);
   const [meteors, setMeteors] = useState<ARObject[]>([]);
   const [namedStarsRaw, setNamedStarsRaw] = useState<NamedStarRecord[]>([]);
-  const [selectedEntity, setSelectedEntity] = useState<ARObject | null>(null);
 
-  // Target lock state
+  // Selection, search, and target tracking states
+  const [selectedEntity, setSelectedEntity] = useState<ARObject | null>(null);
+  const [activeTrackingTarget, setActiveTrackingTarget] =
+    useState<ARObject | null>(null);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
+
+  // Target lock sound state
   const prevLockedTargetIdRef = useRef<string | null>(null);
 
   // Elements for recorder
@@ -85,6 +100,15 @@ export function App() {
     );
   }, [namedStarsRaw, location.latitude, location.longitude]);
 
+  // Compute real-time Solar System bodies (Moon, Venus, Mars, Jupiter, Saturn, Sun)
+  const solarSystemAR = useMemo(() => {
+    return getSolarSystemARObjects(
+      location.latitude,
+      location.longitude,
+      new Date(),
+    );
+  }, [location.latitude, location.longitude]);
+
   // Compute floating constellation labels
   const constellationLabels = useMemo(() => {
     const now = new Date();
@@ -105,6 +129,34 @@ export function App() {
       };
     });
   }, [location.latitude, location.longitude]);
+
+  // Compute dynamic frustum FOV matching current window and camera zoom
+  const { hFov, vFov } = useMemo(() => {
+    const aspect =
+      typeof window !== "undefined"
+        ? window.innerWidth / window.innerHeight
+        : 16 / 9;
+    return computeDynamicFov(cameraFov, aspect);
+  }, [cameraFov]);
+
+  // All available objects for searching and target guidance
+  const allAvailableObjects = useMemo(() => {
+    return [
+      ...solarSystemAR,
+      ...satellites,
+      ...namedStarsAR,
+      ...constellationLabels,
+      ...airplanes,
+      ...meteors,
+    ];
+  }, [
+    solarSystemAR,
+    satellites,
+    namedStarsAR,
+    constellationLabels,
+    airplanes,
+    meteors,
+  ]);
 
   // Initialize Web Worker for background telemetry
   useEffect(() => {
@@ -153,6 +205,7 @@ export function App() {
   // Auto-targeting: Detect which celestial or orbital object is centered in the crosshairs
   const lockedTarget = useMemo(() => {
     const activeObjects: ARObject[] = [];
+    if (showPlanets) activeObjects.push(...solarSystemAR);
     if (showSatellites) activeObjects.push(...satellites);
     if (showAircraft) activeObjects.push(...airplanes);
     if (showMeteors) activeObjects.push(...meteors);
@@ -174,10 +227,12 @@ export function App() {
     }
     return closest;
   }, [
+    showPlanets,
     showSatellites,
     showAircraft,
     showMeteors,
     showStars,
+    solarSystemAR,
     satellites,
     airplanes,
     meteors,
@@ -194,6 +249,24 @@ export function App() {
     }
     prevLockedTargetIdRef.current = currentId;
   }, [lockedTarget]);
+
+  // Keyboard shortcut handlers (Cmd+K or / for search, ? for help)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setIsSearchOpen((prev) => !prev);
+      } else if (e.key === "/" && document.activeElement?.tagName !== "INPUT") {
+        e.preventDefault();
+        setIsSearchOpen(true);
+      } else if (e.key === "?" && document.activeElement?.tagName !== "INPUT") {
+        e.preventDefault();
+        setIsHelpOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   // Sync Night Vision Class on <body>
   const handleToggleNightVision = () => {
@@ -216,12 +289,18 @@ export function App() {
     setVideoElement(video);
   };
 
+  const handleSelectTrackingTarget = (target: ARObject) => {
+    setActiveTrackingTarget(target);
+    soundService.playLockSound();
+  };
+
   return (
-    <main className="relative w-screen h-screen overflow-hidden bg-astro-dark">
+    <main className="relative w-screen h-screen overflow-hidden bg-astro-dark select-none">
       {/* 1. AR WebGL + Camera Layer */}
       <ARView
         onTelemetryUpdate={setTelemetry}
         onLocationUpdate={setLocation}
+        onFovUpdate={setCameraFov}
         showStars={showStars}
         showConstellations={showConstellations}
         isNightVision={isNightVision}
@@ -231,7 +310,17 @@ export function App() {
       {/* 2. Top Compass & Attitude HUD */}
       <CompassHUD telemetry={telemetry} location={location} />
 
-      {/* 3. Central Tactical Reticle with Target Auto-Lock */}
+      {/* 3. Off-screen Target Guidance Indicator */}
+      <TargetGuide
+        target={activeTrackingTarget}
+        telemetry={telemetry}
+        hFov={hFov}
+        vFov={vFov}
+        isNightVision={isNightVision}
+        onClearTarget={() => setActiveTrackingTarget(null)}
+      />
+
+      {/* 4. Central Tactical Reticle with Target Auto-Lock */}
       <Reticle
         altitude={telemetry.altitude}
         roll={telemetry.roll}
@@ -240,34 +329,40 @@ export function App() {
         isNightVision={isNightVision}
       />
 
-      {/* 4. Dynamic Satellites, Aircraft, Meteors, and Named Stars Projection Layer */}
+      {/* 5. Dynamic Celestial, Orbital, & Aeronautical Projection Layer */}
       <EntityOverlay
         telemetry={telemetry}
         satellites={satellites}
         airplanes={airplanes}
         meteors={meteors}
+        planets={solarSystemAR}
         namedStars={namedStarsAR}
         constellationLabels={constellationLabels}
         showSatellites={showSatellites}
         showAirplanes={showAircraft}
         showMeteors={showMeteors}
+        showPlanets={showPlanets}
         showStars={showStars}
         showConstellations={showConstellations}
+        hFov={hFov}
+        vFov={vFov}
         isNightVision={isNightVision}
         onSelectEntity={setSelectedEntity}
       />
 
-      {/* 5. In-Browser Video Recording Controls */}
+      {/* 6. In-Browser Video Recording Controls */}
       <RecordingControls
         videoElement={videoElement}
         webglCanvas={webglCanvas}
         isNightVision={isNightVision}
       />
 
-      {/* 6. Tactical Bottom Control Dock */}
+      {/* 7. Tactical Bottom Control Dock */}
       <ControlPanel
         isNightVision={isNightVision}
         onToggleNightVision={handleToggleNightVision}
+        showPlanets={showPlanets}
+        onTogglePlanets={() => setShowPlanets((prev) => !prev)}
         showStars={showStars}
         onToggleStars={() => setShowStars((prev) => !prev)}
         showConstellations={showConstellations}
@@ -278,12 +373,30 @@ export function App() {
         onToggleAircraft={() => setShowAircraft((prev) => !prev)}
         showMeteors={showMeteors}
         onToggleMeteors={() => setShowMeteors((prev) => !prev)}
+        onOpenSearch={() => setIsSearchOpen(true)}
+        onOpenHelp={() => setIsHelpOpen(true)}
       />
 
-      {/* 7. Detailed Entity Inspector Modal */}
+      {/* 8. Detailed Entity Inspector Modal */}
       <TelemetryModal
         entity={selectedEntity}
         onClose={() => setSelectedEntity(null)}
+        isNightVision={isNightVision}
+      />
+
+      {/* 9. Celestial Target Finder Search Modal */}
+      <SearchModal
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        onSelectTarget={handleSelectTrackingTarget}
+        availableObjects={allAvailableObjects}
+        isNightVision={isNightVision}
+      />
+
+      {/* 10. AR User Guide & Symbol Legend Modal */}
+      <HelpModal
+        isOpen={isHelpOpen}
+        onClose={() => setIsHelpOpen(false)}
         isNightVision={isNightVision}
       />
     </main>

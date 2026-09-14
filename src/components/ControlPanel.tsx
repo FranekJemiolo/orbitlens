@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import {
   Eye,
   Sparkles,
+  Globe2,
   Satellite,
   Plane,
   Flame,
@@ -11,6 +12,8 @@ import {
   Volume2,
   VolumeX,
   Smartphone,
+  Search,
+  HelpCircle,
 } from "lucide-react";
 import { sensorService } from "../services/sensors";
 import { soundService } from "../services/audio";
@@ -18,6 +21,8 @@ import { soundService } from "../services/audio";
 interface ControlPanelProps {
   isNightVision: boolean;
   onToggleNightVision: () => void;
+  showPlanets: boolean;
+  onTogglePlanets: () => void;
   showStars: boolean;
   onToggleStars: () => void;
   showConstellations: boolean;
@@ -28,11 +33,15 @@ interface ControlPanelProps {
   onToggleAircraft: () => void;
   showMeteors: boolean;
   onToggleMeteors: () => void;
+  onOpenSearch: () => void;
+  onOpenHelp: () => void;
 }
 
 export const ControlPanel: React.FC<ControlPanelProps> = ({
   isNightVision,
   onToggleNightVision,
+  showPlanets,
+  onTogglePlanets,
   showStars,
   onToggleStars,
   showConstellations,
@@ -43,6 +52,8 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   onToggleAircraft,
   showMeteors,
   onToggleMeteors,
+  onOpenSearch,
+  onOpenHelp,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [hasPermission, setHasPermission] = useState(true);
@@ -86,16 +97,16 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   };
 
   return (
-    <div className="absolute bottom-4 left-3 right-3 select-none z-30 pointer-events-auto">
+    <div className="absolute bottom-3 left-2.5 right-2.5 select-none z-30 pointer-events-auto pb-[env(safe-area-inset-bottom,0px)]">
       {/* Quick Action Dock */}
-      <div className="flex items-center justify-between gap-2 bg-astro-dark/85 backdrop-blur-md border border-astro-accent/30 rounded-2xl p-2 shadow-2xl">
+      <div className="flex items-center justify-between gap-1.5 bg-astro-dark/90 backdrop-blur-md border border-astro-accent/30 rounded-2xl p-1.5 shadow-2xl">
         {/* Night Vision Switch */}
         <button
           onClick={() => {
             soundService.playClickSound();
             onToggleNightVision();
           }}
-          className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-mono font-semibold transition-all duration-200 border ${
+          className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-mono font-semibold transition-all duration-200 border shrink-0 ${
             isNightVision
               ? "bg-red-600/30 border-red-500 text-red-400 shadow-md shadow-red-500/20"
               : "bg-astro-dark/50 border-astro-accent/30 text-astro-text/80 hover:border-astro-accent hover:text-astro-accent"
@@ -109,8 +120,39 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
           <span>{isNightVision ? "NV ACTIVE" : "NIGHT VISION"}</span>
         </button>
 
-        {/* Quick Toggles: Stars, Satellites, Aircraft */}
+        {/* Action Buttons: Search, Planets, Stars, Sats, Flights, Sound, Help, Settings */}
         <div className="flex items-center gap-1">
+          {/* Search Trigger */}
+          <button
+            onClick={() => {
+              soundService.playClickSound();
+              onOpenSearch();
+            }}
+            className="p-2 rounded-xl text-xs bg-astro-accent/15 border border-astro-accent/40 text-astro-accent hover:bg-astro-accent/25 transition"
+            title="Celestial Target Finder (Search)"
+            data-testid="open-search-button"
+          >
+            <Search className="w-4 h-4" />
+          </button>
+
+          {/* Planets Toggle */}
+          <button
+            onClick={() => {
+              soundService.playClickSound();
+              onTogglePlanets();
+            }}
+            className={`p-2 rounded-xl text-xs transition border ${
+              showPlanets
+                ? "bg-amber-400/20 border-amber-400 text-amber-300 font-bold"
+                : "bg-astro-dark/40 border-astro-accent/20 text-astro-text/40"
+            }`}
+            title="Toggle Planets & Moon"
+            data-testid="toggle-planets"
+          >
+            <Globe2 className="w-4 h-4" />
+          </button>
+
+          {/* Stars Toggle */}
           <button
             onClick={() => {
               soundService.playClickSound();
@@ -127,6 +169,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
             <Sparkles className="w-4 h-4" />
           </button>
 
+          {/* Satellites Toggle */}
           <button
             onClick={() => {
               soundService.playClickSound();
@@ -143,6 +186,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
             <Satellite className="w-4 h-4" />
           </button>
 
+          {/* Aircraft Toggle */}
           <button
             onClick={() => {
               soundService.playClickSound();
@@ -167,7 +211,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
                 ? "bg-astro-accent/15 border-astro-accent/40 text-astro-accent"
                 : "bg-astro-dark/40 border-astro-accent/20 text-astro-text/40"
             }`}
-            title={isSoundOn ? "Mute Tactical Audio" : "Unmute Tactical Audio"}
+            title={isSoundOn ? "Mute Audio Feedback" : "Unmute Audio Feedback"}
           >
             {isSoundOn ? (
               <Volume2 className="w-4 h-4" />
@@ -176,7 +220,20 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
             )}
           </button>
 
-          {/* Expand Menu Button */}
+          {/* Quick Help / Legend */}
+          <button
+            onClick={() => {
+              soundService.playClickSound();
+              onOpenHelp();
+            }}
+            className="p-2 rounded-xl text-xs bg-astro-dark/60 border border-astro-accent/30 text-astro-text/70 hover:text-astro-accent hover:border-astro-accent transition"
+            title="AR User Guide & Symbols"
+            data-testid="open-help-button"
+          >
+            <HelpCircle className="w-4 h-4" />
+          </button>
+
+          {/* Expand Menu Drawer Button */}
           <button
             onClick={() => {
               soundService.playClickSound();
@@ -208,6 +265,25 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
           </div>
 
           <div className="grid grid-cols-2 gap-2 text-xs font-mono">
+            {/* Planets & Moon */}
+            <button
+              onClick={() => {
+                soundService.playClickSound();
+                onTogglePlanets();
+              }}
+              className={`flex items-center justify-between p-2.5 rounded-xl border transition ${
+                showPlanets
+                  ? "bg-amber-400/20 border-amber-400 text-amber-300 font-semibold"
+                  : "bg-astro-dark/50 border-astro-accent/20 text-astro-text/50"
+              }`}
+              data-testid="drawer-toggle-planets"
+            >
+              <span className="flex items-center gap-1.5">
+                <Globe2 className="w-3.5 h-3.5" /> Planets & Moon
+              </span>
+              <span className="text-[10px]">{showPlanets ? "ON" : "OFF"}</span>
+            </button>
+
             {/* Stars */}
             <button
               onClick={() => {
@@ -219,6 +295,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
                   ? "bg-astro-accent/20 border-astro-accent text-astro-accent font-semibold"
                   : "bg-astro-dark/50 border-astro-accent/20 text-astro-text/50"
               }`}
+              data-testid="drawer-toggle-stars"
             >
               <span className="flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5" /> Stars (5,070)
@@ -237,6 +314,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
                   ? "bg-astro-accent/20 border-astro-accent text-astro-accent font-semibold"
                   : "bg-astro-dark/50 border-astro-accent/20 text-astro-text/50"
               }`}
+              data-testid="drawer-toggle-constellations"
             >
               <span className="flex items-center gap-1.5">
                 <Eye className="w-3.5 h-3.5" /> Constellations
@@ -257,6 +335,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
                   ? "bg-red-500/20 border-red-400 text-red-400 font-semibold"
                   : "bg-astro-dark/50 border-astro-accent/20 text-astro-text/50"
               }`}
+              data-testid="drawer-toggle-satellites"
             >
               <span className="flex items-center gap-1.5">
                 <Satellite className="w-3.5 h-3.5" /> Satellites (ISS)
@@ -277,6 +356,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
                   ? "bg-emerald-500/20 border-emerald-400 text-emerald-400 font-semibold"
                   : "bg-astro-dark/50 border-astro-accent/20 text-astro-text/50"
               }`}
+              data-testid="drawer-toggle-aircraft"
             >
               <span className="flex items-center gap-1.5">
                 <Plane className="w-3.5 h-3.5" /> Aircraft (ADS-B)
@@ -295,6 +375,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
                   ? "bg-amber-500/20 border-amber-400 text-amber-400 font-semibold"
                   : "bg-astro-dark/50 border-astro-accent/20 text-astro-text/50"
               }`}
+              data-testid="drawer-toggle-meteors"
             >
               <span className="flex items-center gap-1.5">
                 <Flame className="w-3.5 h-3.5" /> Meteor Radiants
@@ -305,14 +386,15 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
             {/* Sensor Calibration / iOS Permission */}
             <button
               onClick={handleRequestSensorPermission}
-              className="flex items-center justify-between p-2.5 rounded-xl border border-astro-accent/30 bg-astro-accent/10 text-astro-accent font-semibold hover:bg-astro-accent/20 transition"
+              className="flex items-center justify-between p-2.5 rounded-xl border border-astro-accent/30 bg-astro-accent/10 text-astro-accent font-semibold hover:bg-astro-accent/20 transition col-span-2"
               title="Calibrate Gyroscope & Compass"
             >
               <span className="flex items-center gap-1.5">
-                <ShieldAlert className="w-3.5 h-3.5" /> Sensor Calib
+                <ShieldAlert className="w-3.5 h-3.5" /> Gyro / Compass Sensor
+                Calibration
               </span>
               <span className="text-[10px]">
-                {hasPermission ? "ACTIVE" : "GRANT"}
+                {hasPermission ? "CALIBRATED" : "GRANT PERMISSION"}
               </span>
             </button>
           </div>

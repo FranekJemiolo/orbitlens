@@ -21,6 +21,7 @@ import type { LocationState } from "../services/sensors";
 interface ARViewProps {
   onTelemetryUpdate: (telemetry: OrientationTelemetry) => void;
   onLocationUpdate?: (loc: LocationState) => void;
+  onFovUpdate?: (fov: number) => void;
   showStars: boolean;
   showConstellations: boolean;
   isNightVision: boolean;
@@ -76,6 +77,7 @@ function createCardinalSprite(text: string, color = "#38BDF8"): THREE.Sprite {
 export const ARView: React.FC<ARViewProps> = ({
   onTelemetryUpdate,
   onLocationUpdate,
+  onFovUpdate,
   showStars,
   showConstellations,
   isNightVision,
@@ -88,6 +90,7 @@ export const ARView: React.FC<ARViewProps> = ({
   const propsRef = useRef({
     onTelemetryUpdate,
     onLocationUpdate,
+    onFovUpdate,
     showStars,
     showConstellations,
     isNightVision,
@@ -98,6 +101,7 @@ export const ARView: React.FC<ARViewProps> = ({
     propsRef.current = {
       onTelemetryUpdate,
       onLocationUpdate,
+      onFovUpdate,
       showStars,
       showConstellations,
       isNightVision,
@@ -387,6 +391,9 @@ export const ARView: React.FC<ARViewProps> = ({
     );
     cameraRef.current.fov = newFov;
     cameraRef.current.updateProjectionMatrix();
+    if (propsRef.current.onFovUpdate) {
+      propsRef.current.onFovUpdate(newFov);
+    }
   };
 
   // Desktop drag & mobile touch controls
@@ -420,6 +427,7 @@ export const ARView: React.FC<ARViewProps> = ({
   // Touch pinch to zoom handler
   const handleTouchMove = (e: React.TouchEvent) => {
     if (e.touches.length === 2 && cameraRef.current) {
+      isDraggingRef.current = false;
       const dx = e.touches[0].clientX - e.touches[1].clientX;
       const dy = e.touches[0].clientY - e.touches[1].clientY;
       const dist = Math.sqrt(dx * dx + dy * dy);
@@ -432,6 +440,9 @@ export const ARView: React.FC<ARViewProps> = ({
         );
         cameraRef.current.fov = newFov;
         cameraRef.current.updateProjectionMatrix();
+        if (propsRef.current.onFovUpdate) {
+          propsRef.current.onFovUpdate(newFov);
+        }
       }
       pinchDistRef.current = dist;
     }
@@ -440,7 +451,7 @@ export const ARView: React.FC<ARViewProps> = ({
   return (
     <div
       ref={containerRef}
-      className="relative w-full h-full overflow-hidden bg-astro-dark cursor-grab active:cursor-grabbing"
+      className="relative w-full h-full overflow-hidden bg-astro-dark cursor-grab active:cursor-grabbing touch-none select-none"
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}

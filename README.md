@@ -12,8 +12,8 @@
 
 ## Visual Showcase
 
-| Tactical HUD Overlay | Astro-Red Night Vision Mode |
-| :---: | :---: |
+|                      Tactical HUD Overlay                       |                         Astro-Red Night Vision Mode                          |
+| :-------------------------------------------------------------: | :--------------------------------------------------------------------------: |
 | ![OrbitLens Tactical View](./docs/assets/orbitlens-preview.png) | ![OrbitLens Astro-Red Night Vision](./docs/assets/orbitlens-nightvision.png) |
 
 ---
@@ -34,6 +34,7 @@
 ## Mathematical Architecture
 
 Refer to [docs/DESIGN.md](./docs/DESIGN.md) for full mathematical derivations of:
+
 - Greenwich Mean Sidereal Time (GMST) and Local Sidereal Time (LMST)
 - Equatorial (RA/Dec) to Topocentric Horizontal (Alt/Az) coordinates
 - Spherical to 3D Cartesian coordinates
@@ -45,11 +46,13 @@ Refer to [docs/DESIGN.md](./docs/DESIGN.md) for full mathematical derivations of
 ## Local Development & Setup
 
 ### Prerequisites
+
 - Node.js 20+
 - Python 3.8+ (for data ingestion and drift checks)
 - Git
 
 ### Installation
+
 ```bash
 # Clone the repository
 git clone https://github.com/FranekJemiolo/orbitlens.git
@@ -63,7 +66,9 @@ npm run dev
 ```
 
 ### Pre-commit Hooks with Prek
+
 The repository uses [prek](https://prek.j178.dev/) to enforce formatting, linting, type safety, and unit tests:
+
 ```bash
 # Install git hooks locally
 prek install
@@ -73,6 +78,7 @@ prek run --all-files
 ```
 
 ### Testing Suite
+
 ```bash
 # Run mathematical unit tests (Vitest)
 npm run test:unit
@@ -85,6 +91,7 @@ npm run screenshots
 ```
 
 ### Static Data Regeneration
+
 ```bash
 # Ingest and compile the raw HYG catalog into stars.bin
 python3 scripts/process_hyg.py
