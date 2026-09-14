@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Video, Square, CheckCircle2 } from "lucide-react";
 import { recorderService } from "../services/recorder";
+import { soundService } from "../services/audio";
 
 interface RecordingControlsProps {
   videoElement: HTMLVideoElement | null;
@@ -36,6 +37,7 @@ export const RecordingControls: React.FC<RecordingControlsProps> = ({
 
   const handleStartRecording = () => {
     try {
+      soundService.playRecordSound(true);
       recorderService.startRecording(videoElement, webglCanvas);
       setRecordDuration(0);
       setIsRecording(true);
@@ -47,6 +49,7 @@ export const RecordingControls: React.FC<RecordingControlsProps> = ({
 
   const handleStopRecording = async () => {
     try {
+      soundService.playRecordSound(false);
       await recorderService.stopRecording();
       setIsRecording(false);
       setDownloadSuccess(true);

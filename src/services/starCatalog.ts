@@ -3,6 +3,7 @@ import {
   equatorialToHorizontal,
   horizontalToCartesian,
 } from "../math/coordinates";
+import type { ARObject } from "../math/coordinates";
 
 export interface StarRecord {
   id: number;
@@ -16,12 +17,71 @@ export interface ConstellationLine {
   lines: [[number, number], [number, number]][]; // [[ra1, dec1], [ra2, dec2]]
 }
 
+export interface NamedStarRecord {
+  id: number;
+  name: string;
+  raRad: number;
+  decRad: number;
+  mag: number;
+  constellation: string;
+  spectralType: string;
+}
+
 export interface StarCatalogData {
   stars: StarRecord[];
   starPositions: Float32Array; // [x, y, z, x, y, z, ...]
   starSizes: Float32Array; // [size, size, ...]
   starColors: Float32Array; // [r, g, b, r, g, b, ...]
   constellationPositions: Float32Array; // Line segments for constellations
+}
+
+/**
+ * Loads named prominent benchmark stars from public/data/named_stars.json
+ */
+export async function loadNamedStars(
+  basePath = "./",
+): Promise<NamedStarRecord[]> {
+  try {
+    const url = `${basePath.replace(/\/$/, "")}/data/named_stars.json`;
+    const response = await fetch(url);
+    if (!response.ok) return [];
+    return (await response.json()) as NamedStarRecord[];
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Converts named stars into ARObject entities for interactive targeting
+ */
+export function getNamedStarsARObjects(
+  namedStars: NamedStarRecord[],
+  observerLat: number,
+  observerLon: number,
+  date: Date,
+): ARObject[] {
+  return namedStars.map((star) => {
+    const { altitude, azimuth } = equatorialToHorizontal(
+      star.raRad,
+      star.decRad,
+      observerLat,
+      observerLon,
+      date,
+    );
+    return {
+      id: `star-${star.id}`,
+      type: "STAR",
+      label: star.name,
+      altitude,
+      azimuth,
+      magnitude: star.mag,
+      metadata: {
+        constellation: star.constellation,
+        spectralType: star.spectralType,
+        hygId: star.id,
+      },
+    };
+  });
 }
 
 /**

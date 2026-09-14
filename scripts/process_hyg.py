@@ -175,5 +175,37 @@ def process():
         json.dump(MAJOR_CONSTELLATIONS, f_const, indent=2)
     print(f"Saved constellation stick figures to {LOCAL_CONSTELLATIONS}")
 
+    # 5. Export Named Bright Benchmark Stars for interactive AR inspection
+    con_names = {
+        "And": "Andromeda", "Aqr": "Aquarius", "Aql": "Aquila", "Ari": "Aries", "Aur": "Auriga",
+        "Boo": "Boötes", "Cnc": "Cancer", "CMa": "Canis Major", "CMi": "Canis Minor",
+        "Cap": "Capricornus", "Car": "Carina", "Cas": "Cassiopeia", "Cen": "Centaurus",
+        "Cep": "Cepheus", "Cet": "Cetus", "Cru": "Crux", "Cyg": "Cygnus", "Eri": "Eridanus",
+        "Gem": "Gemini", "Her": "Hercules", "Hya": "Hydra", "Leo": "Leo", "Lyr": "Lyra",
+        "Oph": "Ophiuchus", "Ori": "Orion", "Peg": "Pegasus", "Per": "Perseus", "Psc": "Pisces",
+        "PsA": "Piscis Austrinus", "Sco": "Scorpius", "Sgr": "Sagittarius", "Tau": "Taurus",
+        "UMa": "Ursa Major", "UMi": "Ursa Minor", "Vel": "Vela", "Vir": "Virgo"
+    }
+
+    named_df = df[df["proper"].notna() & (df["mag"] <= 3.2)].copy()
+    named_stars = []
+    for _, row in named_df.iterrows():
+        raw_con = str(row["con"]) if pd.notna(row["con"]) else ""
+        con_full = con_names.get(raw_con, raw_con)
+        named_stars.append({
+            "id": int(row["id"]),
+            "name": str(row["proper"]).strip(),
+            "raRad": round(float(row["ra"]) * (math.pi / 12.0), 6),
+            "decRad": round(float(np.deg2rad(row["dec"])), 6),
+            "mag": round(float(row["mag"]), 2),
+            "constellation": con_full,
+            "spectralType": str(row["spect"]).strip() if pd.notna(row["spect"]) else "Unknown"
+        })
+
+    local_named = os.path.join(OUTPUT_DIR, "named_stars.json")
+    with open(local_named, "w", encoding="utf-8") as f_named:
+        json.dump(named_stars, f_named, indent=2)
+    print(f"Saved {len(named_stars)} named stars to {local_named}")
+
 if __name__ == "__main__":
     process()

@@ -105,11 +105,19 @@ export const ARView: React.FC<ARViewProps> = ({
     };
   });
 
+  // Three.js object refs for reactive prop changes
+  const starMeshRef = useRef<THREE.Points | null>(null);
+  const constellationMeshRef = useRef<THREE.LineSegments | null>(null);
+  const constellationMaterialRef = useRef<THREE.LineBasicMaterial | null>(null);
+  const horizonLineRef = useRef<THREE.Line | null>(null);
+  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+
   // Fallback drag controls state for desktop
   const isDraggingRef = useRef(false);
   const dragStartRef = useRef({ x: 0, y: 0 });
   const manualEulerRef = useRef({ yaw: 0, pitch: 0 });
   const hasReceivedHardwareSensorRef = useRef(false);
+  const pinchDistRef = useRef<number | null>(null);
 
   useEffect(() => {
     let animationFrameId: number;
@@ -254,6 +262,13 @@ export const ARView: React.FC<ARViewProps> = ({
       );
       constellationMesh.visible = propsRef.current.showConstellations;
       scene.add(constellationMesh);
+
+      // Save into refs for instant prop toggling
+      starMeshRef.current = starMesh;
+      constellationMeshRef.current = constellationMesh;
+      constellationMaterialRef.current = constellationMaterial;
+      horizonLineRef.current = horizonLine;
+      cameraRef.current = camera;
     }
 
     // 3. Sensor Tracking
@@ -343,16 +358,38 @@ export const ARView: React.FC<ARViewProps> = ({
     };
   }, []);
 
-  // Sync visibility props
+  // Sync visibility props reactively to Three.js scene
   useEffect(() => {
-    // Dynamic night vision color updates
-    const video = videoRef.current;
-    if (video) {
-      // Body night-vision-active takes care of CSS filter
+    if (starMeshRef.current) {
+      starMeshRef.current.visible = showStars;
+    }
+    if (constellationMeshRef.current) {
+      constellationMeshRef.current.visible = showConstellations;
+    }
+    if (constellationMaterialRef.current) {
+      constellationMaterialRef.current.color.set(
+        isNightVision ? 0xff0000 : 0x38bdf8,
+      );
+    }
+    if (horizonLineRef.current) {
+      (horizonLineRef.current.material as THREE.LineBasicMaterial).color.set(
+        isNightVision ? 0x7f0000 : 0x38bdf8,
+      );
     }
   }, [showStars, showConstellations, isNightVision]);
 
-  // Desktop drag controls for sky navigation
+  // Mouse wheel zoom
+  const handleWheel = (e: React.WheelEvent) => {
+    if (!cameraRef.current) return;
+    const newFov = Math.max(
+      25,
+      Math.min(85, cameraRef.current.fov + e.deltaY * 0.05),
+    );
+    cameraRef.current.fov = newFov;
+    cameraRef.current.updateProjectionMatrix();
+  };
+
+  // Desktop drag & mobile touch controls
   const handlePointerDown = (e: React.PointerEvent) => {
     isDraggingRef.current = true;
     dragStartRef.current = { x: e.clientX, y: e.clientY };
@@ -377,6 +414,27 @@ export const ARView: React.FC<ARViewProps> = ({
 
   const handlePointerUp = () => {
     isDraggingRef.current = false;
+    pinchDistRef.current = null;
+  };
+
+  // Touch pinch to zoom handler
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length === 2 && cameraRef.current) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+
+      if (pinchDistRef.current !== null) {
+        const delta = pinchDistRef.current - dist;
+        const newFov = Math.max(
+          25,
+          Math.min(85, cameraRef.current.fov + delta * 0.1),
+        );
+        cameraRef.current.fov = newFov;
+        cameraRef.current.updateProjectionMatrix();
+      }
+      pinchDistRef.current = dist;
+    }
   };
 
   return (
@@ -387,6 +445,8 @@ export const ARView: React.FC<ARViewProps> = ({
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
+      onTouchMove={handleTouchMove}
+      onWheel={handleWheel}
       data-testid="ar-view-container"
     >
       {/* Background Camera Layer */}
