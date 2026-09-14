@@ -1,5 +1,5 @@
 import { DEG2RAD, RAD2DEG } from "./astronomy";
-import { ARObject } from "./coordinates";
+import type { ARObject } from "./coordinates";
 
 export interface OpenSkyStateVector {
   icao24: string;

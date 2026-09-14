@@ -1,5 +1,7 @@
 dist/
 node_modules/
+test-results/
+playwright-report/
 public/data/stars.json
 public/data/stars.bin
 public/data/hyg_minified.csv

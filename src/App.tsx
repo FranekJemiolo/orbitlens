@@ -1,121 +1,177 @@
-import { useState } from "react";
-import heroImg from "./assets/hero.png";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "./assets/vite.svg";
-import "./App.css";
+import { useState, useEffect, useRef } from "react";
+import { ARView } from "./components/ARView";
+import { CompassHUD } from "./components/CompassHUD";
+import { Reticle } from "./components/Reticle";
+import { EntityOverlay } from "./components/EntityOverlay";
+import { ControlPanel } from "./components/ControlPanel";
+import { RecordingControls } from "./components/RecordingControls";
+import { TelemetryModal } from "./components/TelemetryModal";
+import type { OrientationTelemetry } from "./math/deviceOrientation";
+import { sensorService } from "./services/sensors";
+import type { LocationState } from "./services/sensors";
+import type { ARObject } from "./math/coordinates";
 
-function App() {
-  const [count, setCount] = useState(0);
+export function App() {
+  const [telemetry, setTelemetry] = useState<OrientationTelemetry>({
+    azimuth: 0,
+    altitude: 0,
+    roll: 0,
+  });
+
+  const [location, setLocation] = useState<LocationState>(
+    sensorService.currentLocation,
+  );
+  const [isNightVision, setIsNightVision] = useState(false);
+
+  // Layer toggles
+  const [showStars, setShowStars] = useState(true);
+  const [showConstellations, setShowConstellations] = useState(true);
+  const [showSatellites, setShowSatellites] = useState(true);
+  const [showAircraft, setShowAircraft] = useState(true);
+  const [showMeteors, setShowMeteors] = useState(true);
+
+  // Dynamic telemetry objects
+  const [satellites, setSatellites] = useState<ARObject[]>([]);
+  const [airplanes, setAirplanes] = useState<ARObject[]>([]);
+  const [meteors, setMeteors] = useState<ARObject[]>([]);
+  const [selectedEntity, setSelectedEntity] = useState<ARObject | null>(null);
+
+  // Elements for recorder
+  const [webglCanvas, setWebglCanvas] = useState<HTMLCanvasElement | null>(
+    null,
+  );
+  const [videoElement, setVideoElement] = useState<HTMLVideoElement | null>(
+    null,
+  );
+
+  const workerRef = useRef<Worker | null>(null);
+
+  // Initialize Web Worker for background telemetry
+  useEffect(() => {
+    try {
+      const worker = new Worker(
+        new URL("./workers/telemetry.worker.ts", import.meta.url),
+        {
+          type: "module",
+        },
+      );
+      workerRef.current = worker;
+
+      worker.onmessage = (e: MessageEvent) => {
+        const { type, payload } = e.data;
+        if (type === "TELEMETRY_UPDATE") {
+          if (payload.satellites) setSatellites(payload.satellites);
+          if (payload.airplanes) setAirplanes(payload.airplanes);
+          if (payload.meteors) setMeteors(payload.meteors);
+        }
+      };
+
+      // Periodic query every 5 seconds
+      const queryWorker = () => {
+        worker.postMessage({
+          type: "QUERY_TELEMETRY",
+          payload: {
+            lat: location.latitude,
+            lon: location.longitude,
+            alt: location.altitudeMeters,
+          },
+        });
+      };
+
+      queryWorker();
+      const interval = window.setInterval(queryWorker, 5000);
+
+      return () => {
+        clearInterval(interval);
+        worker.terminate();
+      };
+    } catch (err) {
+      console.warn("Web Worker not supported or failed to start:", err);
+    }
+  }, [location.latitude, location.longitude, location.altitudeMeters]);
+
+  // Sync Night Vision Class on <body>
+  const handleToggleNightVision = () => {
+    setIsNightVision((prev) => {
+      const next = !prev;
+      if (next) {
+        document.body.classList.add("night-vision-active");
+      } else {
+        document.body.classList.remove("night-vision-active");
+      }
+      return next;
+    });
+  };
+
+  const handleCanvasReady = (
+    canvas: HTMLCanvasElement,
+    video: HTMLVideoElement,
+  ) => {
+    setWebglCanvas(canvas);
+    setVideoElement(video);
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <main className="relative w-screen h-screen overflow-hidden bg-astro-dark">
+      {/* 1. AR WebGL + Camera Layer */}
+      <ARView
+        onTelemetryUpdate={setTelemetry}
+        onLocationUpdate={setLocation}
+        showStars={showStars}
+        showConstellations={showConstellations}
+        isNightVision={isNightVision}
+        onCanvasReady={handleCanvasReady}
+      />
 
-      <div className="ticks"></div>
+      {/* 2. Top Compass & Attitude HUD */}
+      <CompassHUD telemetry={telemetry} location={location} />
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+      {/* 3. Central Tactical Reticle */}
+      <Reticle altitude={telemetry.altitude} roll={telemetry.roll} />
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+      {/* 4. Dynamic Satellites, Aircraft, Meteors Projection Layer */}
+      <EntityOverlay
+        telemetry={telemetry}
+        satellites={satellites}
+        airplanes={airplanes}
+        meteors={meteors}
+        showSatellites={showSatellites}
+        showAirplanes={showAircraft}
+        showMeteors={showMeteors}
+        isNightVision={isNightVision}
+        onSelectEntity={setSelectedEntity}
+      />
+
+      {/* 5. In-Browser Video Recording Controls */}
+      <RecordingControls
+        videoElement={videoElement}
+        webglCanvas={webglCanvas}
+        isNightVision={isNightVision}
+      />
+
+      {/* 6. Tactical Bottom Control Dock */}
+      <ControlPanel
+        isNightVision={isNightVision}
+        onToggleNightVision={handleToggleNightVision}
+        showStars={showStars}
+        onToggleStars={() => setShowStars((prev) => !prev)}
+        showConstellations={showConstellations}
+        onToggleConstellations={() => setShowConstellations((prev) => !prev)}
+        showSatellites={showSatellites}
+        onToggleSatellites={() => setShowSatellites((prev) => !prev)}
+        showAircraft={showAircraft}
+        onToggleAircraft={() => setShowAircraft((prev) => !prev)}
+        showMeteors={showMeteors}
+        onToggleMeteors={() => setShowMeteors((prev) => !prev)}
+      />
+
+      {/* 7. Detailed Entity Inspector Modal */}
+      <TelemetryModal
+        entity={selectedEntity}
+        onClose={() => setSelectedEntity(null)}
+        isNightVision={isNightVision}
+      />
+    </main>
   );
 }
 

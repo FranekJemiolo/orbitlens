@@ -33,5 +33,11 @@ jobs:
       - name: Run Mathematical Unit Tests
         run: npm run test:unit
 
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run End-to-End Tests
+        run: npm run test:e2e -- --project="Mobile Chrome"
+
       - name: Build Application
         run: npm run build

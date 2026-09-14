@@ -1,6 +1,6 @@
 import * as satellite from "satellite.js";
 import { RAD2DEG, DEG2RAD } from "./astronomy";
-import { ARObject } from "./coordinates";
+import type { ARObject } from "./coordinates";
 
 export interface SatelliteLookAngles {
   altitude: number; // Degrees above horizon (-90 to +90)

@@ -1,4 +1,5 @@
-import { equatorialToHorizontal, ARObject } from "./coordinates";
+import { equatorialToHorizontal } from "./coordinates";
+import type { ARObject } from "./coordinates";
 
 export interface MeteorShower {
   name: string;
