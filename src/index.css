@@ -1,0 +1,94 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-color: #0b0e14;
+  --text-color: #f8fafc;
+  --accent-color: #38bdf8;
+  --alert-color: #f87171;
+  --hud-border: rgba(56, 189, 248, 0.3);
+  --hud-bg: rgba(11, 14, 20, 0.75);
+  --hud-glow: rgba(56, 189, 248, 0.4);
+  --reticle-color: #38bdf8;
+  --satellite-color: #ef4444;
+  --airplane-color: #22c55e;
+  --star-color: #ffffff;
+  --constellation-color: rgba(56, 189, 248, 0.45);
+}
+
+/* Tactical Astro-Red Night Vision Mode */
+body.night-vision-active,
+.night-vision-active {
+  --bg-color: #0a0000;
+  --text-color: #ff2a2a;
+  --accent-color: #ff0000;
+  --alert-color: #ff0033;
+  --hud-border: rgba(255, 0, 0, 0.45);
+  --hud-bg: rgba(20, 0, 0, 0.85);
+  --hud-glow: rgba(255, 0, 0, 0.6);
+  --reticle-color: #ff0000;
+  --satellite-color: #ff3333;
+  --airplane-color: #ff5555;
+  --star-color: #ff4444;
+  --constellation-color: rgba(255, 0, 0, 0.4);
+}
+
+/* Camera Night Vision Filter */
+body.night-vision-active video,
+.night-vision-active video {
+  filter: grayscale(100%) sepia(100%) hue-rotate(315deg) saturate(300%) !important;
+}
+
+/* Global HUD font and reset */
+body {
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.font-mono {
+  font-family: "JetBrains Mono", monospace;
+}
+
+/* Reticle & Crosshair animations */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 2.5s infinite ease-in-out;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--hud-border);
+  border-radius: 2px;
+}
