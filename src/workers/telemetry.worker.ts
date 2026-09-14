@@ -18,6 +18,26 @@ const FALLBACK_ISS_TLE: SatelliteTLE = {
   type: "ISS",
 };
 
+// Fallback CSS (Tiangong Space Station)
+const FALLBACK_CSS_TLE: SatelliteTLE = {
+  name: "CSS (TIANGONG)",
+  line1:
+    "1 48274U 21035A   24001.50000000  .00018500  00000-0  18200-3 0  9991",
+  line2:
+    "2 48274  41.4721 142.1240 0004500  78.4500 281.5400 15.58912340152401",
+  type: "SATELLITE",
+};
+
+// Fallback Hubble Space Telescope (HST)
+const FALLBACK_HST_TLE: SatelliteTLE = {
+  name: "HST (HUBBLE)",
+  line1:
+    "1 20580U 90037B   24001.50000000  .00000850  00000-0  35000-4 0  9992",
+  line2:
+    "2 20580  28.4690  95.4210 0002800 240.1200 119.8500 15.08950000184250",
+  type: "SATELLITE",
+};
+
 // Fallback representative Starlink TLE
 const FALLBACK_STARLINK_TLE: SatelliteTLE = {
   name: "STARLINK-1007",
@@ -28,7 +48,12 @@ const FALLBACK_STARLINK_TLE: SatelliteTLE = {
   type: "STARLINK",
 };
 
-let cachedTLEs: SatelliteTLE[] = [FALLBACK_ISS_TLE, FALLBACK_STARLINK_TLE];
+let cachedTLEs: SatelliteTLE[] = [
+  FALLBACK_ISS_TLE,
+  FALLBACK_CSS_TLE,
+  FALLBACK_HST_TLE,
+  FALLBACK_STARLINK_TLE,
+];
 
 /**
  * Fetches latest ISS and space station TLEs from CelesTrak public endpoint (zero-secret)

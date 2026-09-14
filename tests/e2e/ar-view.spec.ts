@@ -170,4 +170,93 @@ test.describe("OrbitLens AR Celestial Tracker & Sensor Fusion", () => {
     await closeHelpBtn.click();
     await expect(helpModal).not.toBeVisible();
   });
+
+  test("should open Geolocation modal, select a world preset, and update observer coordinates", async ({
+    page,
+  }) => {
+    await page.goto("/");
+
+    // Click on GPS badge in Compass HUD
+    const gpsBadge = page.locator('[data-testid="location-status-badge"]');
+    await expect(gpsBadge).toBeVisible();
+    await gpsBadge.click();
+
+    // Location Modal should appear
+    const locModal = page.locator('[data-testid="location-modal"]');
+    await expect(locModal).toBeVisible();
+    await expect(page.getByText(/OBSERVER GEOLOCATION/i)).toBeVisible();
+
+    // Click Mauna Kea preset
+    const maunaKeaBtn = page.locator('[data-testid="preset-mauna-kea"]');
+    await expect(maunaKeaBtn).toBeVisible();
+    await maunaKeaBtn.click();
+
+    // Modal closes upon selection
+    await expect(locModal).not.toBeVisible();
+
+    // HUD badge should now reflect manual / preset location (Mauna Kea is ~19.82°N, -155.47°W)
+    await expect(gpsBadge).toContainText("Mauna Kea");
+  });
+
+  test("should render All-Sky Radar Map and steer sky direction when clicking on radar", async ({
+    page,
+  }) => {
+    await page.goto("/");
+
+    // Radar should be visible by default
+    const radar = page.locator('[data-testid="all-sky-radar-container"]');
+    await expect(radar).toBeVisible();
+
+    // Verify radar elements: SVG, cardinal markers, camera cursor
+    const radarSvg = page.locator('[data-testid="all-sky-radar-svg"]');
+    await expect(radarSvg).toBeVisible();
+    const camCursor = page.locator('[data-testid="radar-cam-cursor"]');
+    await expect(camCursor).toBeVisible();
+
+    // Click on East quadrant of radar (right of center) to steer heading
+    const box = await radarSvg.boundingBox();
+    if (box) {
+      // Click at center-right
+      await page.mouse.click(box.x + box.width * 0.8, box.y + box.height * 0.5);
+    }
+
+    // Toggle radar off and on via drawer or quick button
+    const toggleRadarBtn = page.locator('[data-testid="toggle-radar"]');
+    await expect(toggleRadarBtn).toBeVisible();
+    await toggleRadarBtn.click();
+    await expect(radar).not.toBeVisible();
+
+    await toggleRadarBtn.click();
+    await expect(radar).toBeVisible();
+  });
+
+  test("should toggle 360° Sky Map mode for daytime stargazing and drag exploration", async ({
+    page,
+  }) => {
+    await page.goto("/");
+
+    const skymapToggle = page.locator('[data-testid="toggle-skymap"]');
+    await expect(skymapToggle).toBeVisible();
+
+    // Initially AR mode with video background visible
+    const video = page.locator('[data-testid="camera-video"]');
+    await expect(video).toBeVisible();
+
+    // Switch to 360° Sky Map mode
+    await skymapToggle.click();
+
+    // Verify Sky Map badge indicator is displayed
+    await expect(page.getByText(/360° SKY MAP/i)).toBeVisible();
+
+    // Drag on AR container to rotate view
+    const arContainer = page.locator('[data-testid="ar-view-container"]');
+    await arContainer.hover({ position: { x: 200, y: 200 } });
+    await page.mouse.down();
+    await page.mouse.move(250, 280);
+    await page.mouse.up();
+
+    // Toggle back to Live AR mode
+    await skymapToggle.click();
+    await expect(page.getByText(/360° SKY MAP/i)).not.toBeVisible();
+  });
 });

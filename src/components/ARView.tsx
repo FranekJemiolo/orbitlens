@@ -17,6 +17,12 @@ import type { StarRecord, ConstellationLine } from "../services/starCatalog";
 import { cameraService } from "../services/camera";
 import { sensorService } from "../services/sensors";
 import type { LocationState } from "../services/sensors";
+import {
+  equatorialToHorizontal,
+  horizontalToCartesian,
+} from "../math/coordinates";
+import type { ARObject } from "../math/coordinates";
+import { getSunPosition, DEG2RAD } from "../math/astronomy";
 
 interface ARViewProps {
   onTelemetryUpdate: (telemetry: OrientationTelemetry) => void;
@@ -24,7 +30,11 @@ interface ARViewProps {
   onFovUpdate?: (fov: number) => void;
   showStars: boolean;
   showConstellations: boolean;
+  showSatellites?: boolean;
+  satellites?: ARObject[];
   isNightVision: boolean;
+  isSkyMapMode?: boolean;
+  steerTarget?: { azimuth: number; altitude: number } | null;
   onCanvasReady?: (canvas: HTMLCanvasElement, video: HTMLVideoElement) => void;
 }
 
@@ -74,13 +84,45 @@ function createCardinalSprite(text: string, color = "#38BDF8"): THREE.Sprite {
   return sprite;
 }
 
+// Generate realistic solar corona sprite
+function createSunSprite(): THREE.Sprite {
+  const canvas = document.createElement("canvas");
+  canvas.width = 128;
+  canvas.height = 128;
+  const ctx = canvas.getContext("2d")!;
+
+  const gradient = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+  gradient.addColorStop(0, "rgba(255, 255, 230, 1.0)");
+  gradient.addColorStop(0.2, "rgba(255, 215, 0, 0.85)");
+  gradient.addColorStop(0.5, "rgba(255, 140, 0, 0.4)");
+  gradient.addColorStop(0.8, "rgba(255, 69, 0, 0.15)");
+  gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
+
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, 128, 128);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  const material = new THREE.SpriteMaterial({
+    map: texture,
+    transparent: true,
+    blending: THREE.AdditiveBlending,
+  });
+  const sprite = new THREE.Sprite(material);
+  sprite.scale.set(75, 75, 1);
+  return sprite;
+}
+
 export const ARView: React.FC<ARViewProps> = ({
   onTelemetryUpdate,
   onLocationUpdate,
   onFovUpdate,
   showStars,
   showConstellations,
+  showSatellites = true,
+  satellites = [],
   isNightVision,
+  isSkyMapMode = false,
+  steerTarget = null,
   onCanvasReady,
 }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -93,7 +135,11 @@ export const ARView: React.FC<ARViewProps> = ({
     onFovUpdate,
     showStars,
     showConstellations,
+    showSatellites,
+    satellites,
     isNightVision,
+    isSkyMapMode,
+    steerTarget,
     onCanvasReady,
   });
 
@@ -104,7 +150,11 @@ export const ARView: React.FC<ARViewProps> = ({
       onFovUpdate,
       showStars,
       showConstellations,
+      showSatellites,
+      satellites,
       isNightVision,
+      isSkyMapMode,
+      steerTarget,
       onCanvasReady,
     };
   });
@@ -115,13 +165,30 @@ export const ARView: React.FC<ARViewProps> = ({
   const constellationMaterialRef = useRef<THREE.LineBasicMaterial | null>(null);
   const horizonLineRef = useRef<THREE.Line | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+  const sunSpriteRef = useRef<THREE.Sprite | null>(null);
+  const orbitLinesGroupRef = useRef<THREE.Group | null>(null);
 
-  // Fallback drag controls state for desktop
+  // Fallback drag controls state for desktop & 360 Sky Map mode
   const isDraggingRef = useRef(false);
   const dragStartRef = useRef({ x: 0, y: 0 });
   const manualEulerRef = useRef({ yaw: 0, pitch: 0 });
   const hasReceivedHardwareSensorRef = useRef(false);
   const pinchDistRef = useRef<number | null>(null);
+
+  // Handle steering target from All-Sky Radar or search selection
+  useEffect(() => {
+    if (steerTarget) {
+      manualEulerRef.current.yaw = -steerTarget.azimuth * DEG2RAD;
+      manualEulerRef.current.pitch = steerTarget.altitude * DEG2RAD;
+    }
+  }, [steerTarget]);
+
+  // Sync video visibility with Sky Map Mode
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.style.opacity = isSkyMapMode ? "0" : "1";
+    }
+  }, [isSkyMapMode]);
 
   useEffect(() => {
     let animationFrameId: number;
@@ -227,6 +294,16 @@ export const ARView: React.FC<ARViewProps> = ({
     });
     scene.add(cardinalGroup);
 
+    // Sun Sprite (Real-time solar position)
+    const sunSprite = createSunSprite();
+    scene.add(sunSprite);
+    sunSpriteRef.current = sunSprite;
+
+    // Orbit lines group for satellites
+    const orbitLinesGroup = new THREE.Group();
+    scene.add(orbitLinesGroup);
+    orbitLinesGroupRef.current = orbitLinesGroup;
+
     let starMesh: THREE.Points | null = null;
     let constellationMesh: THREE.LineSegments | null = null;
     let loadedStars: StarRecord[] = [];
@@ -238,6 +315,7 @@ export const ARView: React.FC<ARViewProps> = ({
         loadedStars = stars;
         loadedConstellations = constellations;
         rebuildGeometry();
+        rebuildOrbitTracks();
       })
       .catch((err) => console.error("Failed to load star data:", err));
 
@@ -245,12 +323,26 @@ export const ARView: React.FC<ARViewProps> = ({
       if (loadedStars.length === 0) return;
 
       const { latitude, longitude } = sensorService.currentLocation;
+      const now = new Date();
+
+      // Update Sun position
+      const sun = getSunPosition(now);
+      const { altitude: sunAlt, azimuth: sunAz } = equatorialToHorizontal(
+        sun.raRad,
+        sun.decRad,
+        latitude,
+        longitude,
+        now,
+      );
+      const sunVec = horizontalToCartesian(sunAlt, sunAz, 980);
+      sunSprite.position.set(sunVec.x, sunVec.y, sunVec.z);
+
       const { starGeometry, constellationGeometry } = buildCelestialGeometry(
         loadedStars,
         loadedConstellations,
         latitude,
         longitude,
-        new Date(),
+        now,
       );
 
       if (starMesh) scene.remove(starMesh);
@@ -273,6 +365,44 @@ export const ARView: React.FC<ARViewProps> = ({
       constellationMaterialRef.current = constellationMaterial;
       horizonLineRef.current = horizonLine;
       cameraRef.current = camera;
+    }
+
+    function rebuildOrbitTracks() {
+      if (!orbitLinesGroup) return;
+      while (orbitLinesGroup.children.length > 0) {
+        const child = orbitLinesGroup.children[0];
+        orbitLinesGroup.remove(child);
+        if (child instanceof THREE.Line) {
+          child.geometry.dispose();
+          (child.material as THREE.Material).dispose();
+        }
+      }
+
+      if (!propsRef.current.showSatellites || !propsRef.current.satellites)
+        return;
+
+      for (const sat of propsRef.current.satellites) {
+        if (sat.orbitTrack && sat.orbitTrack.length > 1) {
+          const points: THREE.Vector3[] = [];
+          for (const pt of sat.orbitTrack) {
+            const c = horizontalToCartesian(pt.altitude, pt.azimuth, 950);
+            points.push(new THREE.Vector3(c.x, c.y, c.z));
+          }
+          const geo = new THREE.BufferGeometry().setFromPoints(points);
+          const mat = new THREE.LineBasicMaterial({
+            color: propsRef.current.isNightVision
+              ? 0xff4444
+              : sat.id.includes("iss")
+                ? 0xef4444
+                : 0x38bdf8,
+            transparent: true,
+            opacity: 0.55,
+            blending: THREE.AdditiveBlending,
+          });
+          const line = new THREE.Line(geo, mat);
+          orbitLinesGroup.add(line);
+        }
+      }
     }
 
     // 3. Sensor Tracking
@@ -305,7 +435,10 @@ export const ARView: React.FC<ARViewProps> = ({
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
 
-      if (hasReceivedHardwareSensorRef.current) {
+      if (
+        hasReceivedHardwareSensorRef.current &&
+        !propsRef.current.isSkyMapMode
+      ) {
         // Sensor fusion hardware quaternion
         const q = computeCameraQuaternion(
           currentOrientationEuler,
@@ -313,7 +446,7 @@ export const ARView: React.FC<ARViewProps> = ({
         );
         targetQuaternion.copy(q);
       } else {
-        // Desktop manual fallback orientation via drag
+        // 360° Sky Map / Drag Explore mode
         const euler = new THREE.Euler(
           manualEulerRef.current.pitch,
           manualEulerRef.current.yaw,
@@ -359,6 +492,7 @@ export const ARView: React.FC<ARViewProps> = ({
       starTexture.dispose();
       starMaterial.dispose();
       constellationMaterial.dispose();
+      sunSprite.material.dispose();
     };
   }, []);
 
@@ -380,7 +514,49 @@ export const ARView: React.FC<ARViewProps> = ({
         isNightVision ? 0x7f0000 : 0x38bdf8,
       );
     }
-  }, [showStars, showConstellations, isNightVision]);
+    if (orbitLinesGroupRef.current) {
+      orbitLinesGroupRef.current.visible = showSatellites;
+    }
+  }, [showStars, showConstellations, isNightVision, showSatellites]);
+
+  // Update 3D satellite orbit tracks reactively
+  useEffect(() => {
+    if (!orbitLinesGroupRef.current) return;
+    const group = orbitLinesGroupRef.current;
+    while (group.children.length > 0) {
+      const child = group.children[0];
+      group.remove(child);
+      if (child instanceof THREE.Line) {
+        child.geometry.dispose();
+        (child.material as THREE.Material).dispose();
+      }
+    }
+
+    if (!showSatellites || !satellites) return;
+
+    for (const sat of satellites) {
+      if (sat.orbitTrack && sat.orbitTrack.length > 1) {
+        const points: THREE.Vector3[] = [];
+        for (const pt of sat.orbitTrack) {
+          const c = horizontalToCartesian(pt.altitude, pt.azimuth, 950);
+          points.push(new THREE.Vector3(c.x, c.y, c.z));
+        }
+        const geo = new THREE.BufferGeometry().setFromPoints(points);
+        const mat = new THREE.LineBasicMaterial({
+          color: isNightVision
+            ? 0xff4444
+            : sat.id.includes("iss")
+              ? 0xef4444
+              : 0x38bdf8,
+          transparent: true,
+          opacity: 0.55,
+          blending: THREE.AdditiveBlending,
+        });
+        const line = new THREE.Line(geo, mat);
+        group.add(line);
+      }
+    }
+  }, [satellites, showSatellites, isNightVision]);
 
   // Mouse wheel zoom
   const handleWheel = (e: React.WheelEvent) => {
@@ -463,12 +639,39 @@ export const ARView: React.FC<ARViewProps> = ({
       {/* Background Camera Layer */}
       <video
         ref={videoRef}
-        className="absolute inset-0 w-full h-full object-cover pointer-events-none transition-[filter] duration-300"
+        className="absolute inset-0 w-full h-full object-cover pointer-events-none transition-opacity duration-300"
         autoPlay
         playsInline
         muted
         data-testid="camera-video"
       />
+
+      {/* 360 Sky Map Deep-Sky Nebula Backdrop (Active in Demo / Sky Map Mode) */}
+      {isSkyMapMode && (
+        <>
+          <div
+            className="absolute inset-0 pointer-events-none bg-gradient-to-b from-[#060914] via-[#0A0E1C] to-[#04060C] transition-opacity duration-500"
+            data-testid="sky-map-backdrop"
+          >
+            {/* Subtle cosmic glow simulating Milky Way arm */}
+            <div className="absolute inset-0 opacity-40 bg-[radial-gradient(ellipse_75%_50%_at_50%_40%,rgba(56,189,248,0.18),rgba(147,51,234,0.08),transparent)]" />
+          </div>
+
+          {/* Floating Sky Map Banner Indicator */}
+          <div
+            className="absolute top-16 left-1/2 -translate-x-1/2 z-20 pointer-events-none animate-in fade-in slide-in-from-top-2 duration-200"
+            data-testid="sky-map-mode-badge"
+          >
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-sky-950/80 border border-sky-400/50 backdrop-blur-md text-sky-200 font-mono text-[11px] shadow-lg shadow-sky-950/50">
+              <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse" />
+              <span className="font-bold tracking-wider">
+                360° SKY MAP ACTIVE
+              </span>
+              <span className="text-sky-300/70 text-[10px]">| DRAG TO PAN</span>
+            </div>
+          </div>
+        </>
+      )}
 
       {/* WebGL Celestial Three.js Canvas */}
       <canvas

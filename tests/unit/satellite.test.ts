@@ -2,8 +2,9 @@ import { describe, it, expect } from "vitest";
 import {
   propagateSatellite,
   satelliteToARObject,
-  SatelliteTLE,
+  propagateSatelliteOrbitTrack,
 } from "../../src/math/satellite";
+import type { SatelliteTLE } from "../../src/math/satellite";
 
 describe("SGP4 Satellite Orbit Propagator", () => {
   // Official historical ISS (ZARYA) TLE
@@ -57,6 +58,27 @@ describe("SGP4 Satellite Orbit Propagator", () => {
       expect(obj.magnitude).toBe(-2.5); // ISS is bright
       expect(typeof obj.distanceKm).toBe("number");
       expect(typeof obj.velocityKmh).toBe("number");
+    }
+  });
+
+  it("should compute multi-point satellite orbital trajectory track", () => {
+    const date = new Date(Date.UTC(2023, 8, 14, 13, 6, 0));
+    const track = propagateSatelliteOrbitTrack(
+      issTLE,
+      51.5074,
+      -0.1278,
+      35,
+      date,
+      60,
+      5,
+    );
+
+    expect(track.length).toBeGreaterThan(5);
+    for (const pt of track) {
+      expect(pt.altitude).toBeGreaterThanOrEqual(-90);
+      expect(pt.altitude).toBeLessThanOrEqual(90);
+      expect(pt.azimuth).toBeGreaterThanOrEqual(0);
+      expect(pt.azimuth).toBeLessThanOrEqual(360);
     }
   });
 

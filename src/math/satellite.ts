@@ -96,6 +96,45 @@ export function propagateSatellite(
 }
 
 /**
+ * Computes an array of topocentric look angles (altitude, azimuth) along a satellite's
+ * orbit over a time window (e.g. -45 min to +45 min) to trace its celestial path across the sky.
+ */
+export function propagateSatelliteOrbitTrack(
+  tle: SatelliteTLE,
+  observerLatDeg: number,
+  observerLonDeg: number,
+  observerAltMeters: number,
+  baseDate: Date,
+  windowMinutes = 90,
+  stepMinutes = 2.5,
+): { altitude: number; azimuth: number }[] {
+  const points: { altitude: number; azimuth: number }[] = [];
+  const halfWindow = windowMinutes / 2;
+  const startTime = baseDate.getTime() - halfWindow * 60 * 1000;
+  const endTime = baseDate.getTime() + halfWindow * 60 * 1000;
+  const stepMs = stepMinutes * 60 * 1000;
+
+  for (let t = startTime; t <= endTime; t += stepMs) {
+    const pointDate = new Date(t);
+    const angles = propagateSatellite(
+      tle,
+      observerLatDeg,
+      observerLonDeg,
+      observerAltMeters,
+      pointDate,
+    );
+    if (angles) {
+      points.push({
+        altitude: angles.altitude,
+        azimuth: angles.azimuth,
+      });
+    }
+  }
+
+  return points;
+}
+
+/**
  * Converts a SatelliteTLE into an ARObject if above or near the horizon
  */
 export function satelliteToARObject(
@@ -104,6 +143,7 @@ export function satelliteToARObject(
   observerLonDeg: number,
   observerAltMeters: number,
   date: Date,
+  includeOrbitTrack = true,
 ): ARObject | null {
   const angles = propagateSatellite(
     tle,
@@ -114,6 +154,16 @@ export function satelliteToARObject(
   );
   if (!angles) return null;
 
+  const orbitTrack = includeOrbitTrack
+    ? propagateSatelliteOrbitTrack(
+        tle,
+        observerLatDeg,
+        observerLonDeg,
+        observerAltMeters,
+        date,
+      )
+    : undefined;
+
   return {
     id: `sat-${tle.name.replace(/\s+/g, "-").toLowerCase()}`,
     type: "SATELLITE",
@@ -123,6 +173,7 @@ export function satelliteToARObject(
     magnitude: tle.name.includes("ISS") ? -2.5 : 3.5,
     distanceKm: Math.round(angles.rangeKm),
     velocityKmh: Math.round(angles.velocityKmh),
+    orbitTrack,
     metadata: {
       heightKm: Math.round(angles.heightKm),
       subLat: Number(angles.latitude.toFixed(2)),

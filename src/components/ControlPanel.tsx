@@ -14,6 +14,8 @@ import {
   Smartphone,
   Search,
   HelpCircle,
+  Compass,
+  Moon,
 } from "lucide-react";
 import { sensorService } from "../services/sensors";
 import { soundService } from "../services/audio";
@@ -33,6 +35,10 @@ interface ControlPanelProps {
   onToggleAircraft: () => void;
   showMeteors: boolean;
   onToggleMeteors: () => void;
+  isSkyMapMode?: boolean;
+  onToggleSkyMapMode?: () => void;
+  isRadarOpen?: boolean;
+  onToggleRadar?: () => void;
   onOpenSearch: () => void;
   onOpenHelp: () => void;
 }
@@ -52,6 +58,10 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   onToggleAircraft,
   showMeteors,
   onToggleMeteors,
+  isSkyMapMode = false,
+  onToggleSkyMapMode,
+  isRadarOpen = true,
+  onToggleRadar,
   onOpenSearch,
   onOpenHelp,
 }) => {
@@ -202,6 +212,48 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
           >
             <Plane className="w-4 h-4" />
           </button>
+
+          {/* Radar Mini-Map Toggle */}
+          {onToggleRadar && (
+            <button
+              onClick={() => {
+                soundService.playClickSound();
+                onToggleRadar();
+              }}
+              className={`p-2 rounded-xl text-xs transition border ${
+                isRadarOpen
+                  ? "bg-astro-accent/25 border-astro-accent text-astro-accent font-bold"
+                  : "bg-astro-dark/40 border-astro-accent/20 text-astro-text/40"
+              }`}
+              title={isRadarOpen ? "Hide All-Sky Radar" : "Show All-Sky Radar"}
+              data-testid="toggle-radar"
+            >
+              <Compass className="w-4 h-4" />
+            </button>
+          )}
+
+          {/* 360 Sky Map / Camera Mode Toggle */}
+          {onToggleSkyMapMode && (
+            <button
+              onClick={() => {
+                soundService.playClickSound();
+                onToggleSkyMapMode();
+              }}
+              className={`p-2 rounded-xl text-xs transition border ${
+                isSkyMapMode
+                  ? "bg-sky-400/25 border-sky-400 text-sky-300 font-bold shadow-md shadow-sky-400/20"
+                  : "bg-astro-dark/40 border-astro-accent/20 text-astro-text/40"
+              }`}
+              title={
+                isSkyMapMode
+                  ? "Switch to Live Camera AR"
+                  : "Switch to 360° Sky Map (Daytime Stargazing / Drag Explore)"
+              }
+              data-testid="toggle-skymap"
+            >
+              <Moon className="w-4 h-4" />
+            </button>
+          )}
 
           {/* Sound Toggle */}
           <button
@@ -382,6 +434,52 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
               </span>
               <span className="text-[10px]">{showMeteors ? "ON" : "OFF"}</span>
             </button>
+
+            {/* All-Sky Radar */}
+            {onToggleRadar && (
+              <button
+                onClick={() => {
+                  soundService.playClickSound();
+                  onToggleRadar();
+                }}
+                className={`flex items-center justify-between p-2.5 rounded-xl border transition ${
+                  isRadarOpen
+                    ? "bg-astro-accent/25 border-astro-accent text-astro-accent font-semibold"
+                    : "bg-astro-dark/50 border-astro-accent/20 text-astro-text/50"
+                }`}
+                data-testid="drawer-toggle-radar"
+              >
+                <span className="flex items-center gap-1.5">
+                  <Compass className="w-3.5 h-3.5" /> All-Sky Radar
+                </span>
+                <span className="text-[10px]">
+                  {isRadarOpen ? "ON" : "OFF"}
+                </span>
+              </button>
+            )}
+
+            {/* 360 Sky Map Mode */}
+            {onToggleSkyMapMode && (
+              <button
+                onClick={() => {
+                  soundService.playClickSound();
+                  onToggleSkyMapMode();
+                }}
+                className={`flex items-center justify-between p-2.5 rounded-xl border transition ${
+                  isSkyMapMode
+                    ? "bg-sky-400/25 border-sky-400 text-sky-300 font-semibold"
+                    : "bg-astro-dark/50 border-astro-accent/20 text-astro-text/50"
+                }`}
+                data-testid="drawer-toggle-skymap"
+              >
+                <span className="flex items-center gap-1.5">
+                  <Moon className="w-3.5 h-3.5" /> 360° Sky Map Mode
+                </span>
+                <span className="text-[10px]">
+                  {isSkyMapMode ? "ON" : "OFF"}
+                </span>
+              </button>
+            )}
 
             {/* Sensor Calibration / iOS Permission */}
             <button

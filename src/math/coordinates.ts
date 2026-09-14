@@ -18,6 +18,7 @@ export interface ARObject {
   distanceKm?: number; // Distance from observer in km
   velocityKmh?: number; // Velocity in km/h
   metadata?: Record<string, string | number | boolean>;
+  orbitTrack?: { altitude: number; azimuth: number }[]; // Projected trajectory track across the sky
 }
 
 /**

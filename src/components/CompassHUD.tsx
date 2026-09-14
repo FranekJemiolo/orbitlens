@@ -7,11 +7,13 @@ import { Compass, Clock, MapPin } from "lucide-react";
 interface CompassHUDProps {
   telemetry: OrientationTelemetry;
   location: LocationState;
+  onOpenLocation?: () => void;
 }
 
 export const CompassHUD: React.FC<CompassHUDProps> = ({
   telemetry,
   location,
+  onOpenLocation,
 }) => {
   const [now, setNow] = useState(new Date());
 
@@ -64,20 +66,41 @@ export const CompassHUD: React.FC<CompassHUDProps> = ({
     <div className="absolute top-0 left-0 right-0 pointer-events-none px-3 pt-[max(0.75rem,env(safe-area-inset-top))] select-none z-20">
       {/* Top Bar: Telemetry Readouts */}
       <div className="flex justify-between items-start text-xs font-mono text-astro-accent gap-2">
-        {/* Left: GPS Telemetry */}
-        <div className="bg-astro-dark/80 backdrop-blur-md border border-astro-accent/25 rounded-xl px-2.5 py-1.5 shadow-xl">
+        {/* Left: GPS Telemetry (Clickable to change location) */}
+        <div
+          onClick={onOpenLocation}
+          className="bg-astro-dark/80 backdrop-blur-md border border-astro-accent/25 hover:border-astro-accent/60 rounded-xl px-2.5 py-1.5 shadow-xl pointer-events-auto cursor-pointer transition active:scale-95 group"
+          title="Click to change observer location or detect GPS"
+          data-testid="location-status-badge"
+        >
           <div className="flex items-center gap-1.5">
-            <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-[10px] uppercase tracking-wider text-astro-text/70 flex items-center gap-1">
-              <MapPin className="w-2.5 h-2.5 inline" /> GPS LOCK
+            <span
+              className={`inline-block w-2 h-2 rounded-full ${
+                location.isManual
+                  ? "bg-amber-400"
+                  : "bg-emerald-400 animate-pulse"
+              }`}
+            />
+            <span className="text-[10px] uppercase tracking-wider text-astro-text/70 group-hover:text-astro-accent flex items-center gap-1">
+              <MapPin className="w-2.5 h-2.5 inline" />{" "}
+              {location.isManual
+                ? location.name || "MANUAL PRESET"
+                : "GPS LOCK"}
             </span>
           </div>
-          <div className="mt-0.5 text-astro-text font-bold text-[11px]">
+          <div
+            className="mt-0.5 text-astro-text font-bold text-[11px] group-hover:text-astro-accent"
+            data-testid="hud-observer-coords"
+          >
             {location.latitude.toFixed(3)}°N, {location.longitude.toFixed(3)}°E
           </div>
           <div className="text-[9px] text-astro-accent/80 flex gap-2">
             <span>ALT: {Math.round(location.altitudeMeters)}M</span>
-            <span>ACC: ±{Math.round(location.accuracy)}M</span>
+            <span>
+              {location.isManual
+                ? "MANUAL"
+                : `ACC: ±${Math.round(location.accuracy)}M`}
+            </span>
           </div>
         </div>
 

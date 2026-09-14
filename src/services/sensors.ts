@@ -6,7 +6,86 @@ export interface LocationState {
   altitudeMeters: number;
   accuracy: number;
   isAvailable: boolean;
+  isManual?: boolean;
+  name?: string;
 }
+
+export interface WorldLocationPreset {
+  id: string;
+  name: string;
+  region: string;
+  latitude: number;
+  longitude: number;
+  altitudeMeters: number;
+  description: string;
+}
+
+export const WORLD_PRESETS: WorldLocationPreset[] = [
+  {
+    id: "london",
+    name: "London, UK",
+    region: "Northern Europe (51.5°N)",
+    latitude: 51.5074,
+    longitude: -0.1278,
+    altitudeMeters: 35,
+    description: "Prime Meridian reference, high northern latitude.",
+  },
+  {
+    id: "new-york",
+    name: "New York, USA",
+    region: "North America (40.7°N)",
+    latitude: 40.7128,
+    longitude: -74.006,
+    altitudeMeters: 10,
+    description: "Mid-northern latitude observer.",
+  },
+  {
+    id: "tokyo",
+    name: "Tokyo, Japan",
+    region: "East Asia (35.7°N)",
+    latitude: 35.6762,
+    longitude: 139.6503,
+    altitudeMeters: 40,
+    description: "Eastern hemisphere night sky.",
+  },
+  {
+    id: "sydney",
+    name: "Sydney, Australia",
+    region: "Southern Hemisphere (33.9°S)",
+    latitude: -33.8688,
+    longitude: 151.2093,
+    altitudeMeters: 25,
+    description: "Southern Cross & Magellanic Clouds visible.",
+  },
+  {
+    id: "mauna-kea",
+    name: "Mauna Kea, Hawaii",
+    region: "Dark Sky Reserve (19.8°N)",
+    latitude: 19.8206,
+    longitude: -155.4681,
+    altitudeMeters: 4205,
+    description: "Premier astronomical observatory high altitude summit.",
+  },
+  {
+    id: "warsaw",
+    name: "Warsaw, Poland",
+    region: "Central Europe (52.2°N)",
+    latitude: 52.2297,
+    longitude: 21.0122,
+    altitudeMeters: 100,
+    description: "Central European observatory baseline.",
+  },
+  {
+    id: "atacama",
+    name: "Atacama Desert, Chile",
+    region: "Dark Sky Reserve (23.8°S)",
+    latitude: -23.8634,
+    longitude: -69.1328,
+    altitudeMeters: 2400,
+    description:
+      "World's clearest dark skies with crisp southern celestial sphere.",
+  },
+];
 
 export type OrientationListener = (
   orientation: DeviceOrientationEuler,
@@ -18,6 +97,7 @@ export class SensorService {
   private orientationListeners: Set<OrientationListener> = new Set();
   private locationListeners: Set<LocationListener> = new Set();
   private watchId: number | null = null;
+  public isManualLocation = false;
 
   public currentLocation: LocationState = {
     latitude: 52.2297, // Default fallback (Warsaw)
@@ -25,6 +105,7 @@ export class SensorService {
     altitudeMeters: 100,
     accuracy: 10,
     isAvailable: false,
+    name: "Warsaw (Default)",
   };
 
   public currentOrientation: DeviceOrientationEuler = {
@@ -101,17 +182,48 @@ export class SensorService {
     );
   }
 
+  setManualLocation(
+    latitude: number,
+    longitude: number,
+    altitudeMeters = 50,
+    name = "Custom Location",
+  ): void {
+    this.isManualLocation = true;
+    this.currentLocation = {
+      latitude,
+      longitude,
+      altitudeMeters,
+      accuracy: 1,
+      isAvailable: true,
+      isManual: true,
+      name,
+    };
+    this.notifyLocationListeners();
+  }
+
+  resetToDeviceGPS(): void {
+    this.isManualLocation = false;
+    this.startGeolocationTracking();
+  }
+
   startGeolocationTracking(): void {
     if (!navigator.geolocation) return;
 
+    if (this.watchId !== null) {
+      navigator.geolocation.clearWatch(this.watchId);
+    }
+
     this.watchId = navigator.geolocation.watchPosition(
       (pos) => {
+        if (this.isManualLocation) return;
         this.currentLocation = {
           latitude: pos.coords.latitude,
           longitude: pos.coords.longitude,
           altitudeMeters: pos.coords.altitude ?? 0,
           accuracy: pos.coords.accuracy,
           isAvailable: true,
+          isManual: false,
+          name: "GPS Lock",
         };
         this.notifyLocationListeners();
       },

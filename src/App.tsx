@@ -9,6 +9,8 @@ import { TelemetryModal } from "./components/TelemetryModal";
 import { SearchModal } from "./components/SearchModal";
 import { TargetGuide } from "./components/TargetGuide";
 import { HelpModal } from "./components/HelpModal";
+import { AllSkyRadar } from "./components/AllSkyRadar";
+import { LocationModal } from "./components/LocationModal";
 import type { OrientationTelemetry } from "./math/deviceOrientation";
 import { sensorService } from "./services/sensors";
 import type { LocationState } from "./services/sensors";
@@ -68,6 +70,13 @@ export function App() {
     useState<ARObject | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
+  const [isRadarOpen, setIsRadarOpen] = useState(true);
+  const [isSkyMapMode, setIsSkyMapMode] = useState(false);
+  const [steerTarget, setSteerTarget] = useState<{
+    azimuth: number;
+    altitude: number;
+  } | null>(null);
 
   // Target lock sound state
   const prevLockedTargetIdRef = useRef<string | null>(null);
@@ -303,12 +312,31 @@ export function App() {
         onFovUpdate={setCameraFov}
         showStars={showStars}
         showConstellations={showConstellations}
+        showSatellites={showSatellites}
+        satellites={satellites}
         isNightVision={isNightVision}
+        isSkyMapMode={isSkyMapMode}
+        steerTarget={steerTarget}
         onCanvasReady={handleCanvasReady}
       />
 
       {/* 2. Top Compass & Attitude HUD */}
-      <CompassHUD telemetry={telemetry} location={location} />
+      <CompassHUD
+        telemetry={telemetry}
+        location={location}
+        onOpenLocation={() => setIsLocationModalOpen(true)}
+      />
+
+      {/* All-Sky Radar (Test Map & View Steering) */}
+      <AllSkyRadar
+        telemetry={telemetry}
+        objects={allAvailableObjects}
+        hFov={hFov}
+        isOpen={isRadarOpen}
+        onToggleOpen={() => setIsRadarOpen((prev) => !prev)}
+        onSteer={(az, alt) => setSteerTarget({ azimuth: az, altitude: alt })}
+        isNightVision={isNightVision}
+      />
 
       {/* 3. Off-screen Target Guidance Indicator */}
       <TargetGuide
@@ -373,6 +401,10 @@ export function App() {
         onToggleAircraft={() => setShowAircraft((prev) => !prev)}
         showMeteors={showMeteors}
         onToggleMeteors={() => setShowMeteors((prev) => !prev)}
+        isSkyMapMode={isSkyMapMode}
+        onToggleSkyMapMode={() => setIsSkyMapMode((prev) => !prev)}
+        isRadarOpen={isRadarOpen}
+        onToggleRadar={() => setIsRadarOpen((prev) => !prev)}
         onOpenSearch={() => setIsSearchOpen(true)}
         onOpenHelp={() => setIsHelpOpen(true)}
       />
@@ -397,6 +429,17 @@ export function App() {
       <HelpModal
         isOpen={isHelpOpen}
         onClose={() => setIsHelpOpen(false)}
+        isNightVision={isNightVision}
+      />
+
+      {/* 11. Observer Geolocation Modal */}
+      <LocationModal
+        isOpen={isLocationModalOpen}
+        onClose={() => setIsLocationModalOpen(false)}
+        currentLocation={location}
+        onSelectLocation={(lat, lon, alt, name) =>
+          sensorService.setManualLocation(lat, lon, alt, name)
+        }
         isNightVision={isNightVision}
       />
     </main>
